@@ -1,0 +1,12 @@
+interface Car {
+    id: number;
+    make: string;
+    model: string;
+    year: number;
+    color: string;
+    price: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export default Car;
