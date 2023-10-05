@@ -1,23 +1,40 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { NewRouter } from './http/router';
-import { NewTestRepo } from './dbrepo';
+import { NewMySQLRepo } from './dbrepo';
 import cors from 'cors';
+import fs from 'fs';
+import { connectMySQL } from './driver';
 
-dotenv.config();
+const main = async () => {
+    dotenv.config();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+    const app = express();
+    app.use(cors());
+    app.use(express.json());
 
-const port = process.env.PORT;
+    const port = process.env.PORT || 8080;
 
-const db = NewTestRepo();
+    const conn = await connectMySQL({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
+        port: parseInt(process.env.MYSQL_PORT || '3306'),
+        ssl: {
+            ca: fs.readFileSync("./mysql-ca-master.crt.pem")
+        }
+    });
 
-const router = NewRouter(db);
+    const db = NewMySQLRepo(conn.MySQL);
 
-app.use('/', router);
+    const router = NewRouter(db);
 
-app.listen(port, () => {
-    console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+    app.use('/', router);
+
+    app.listen(port, () => {
+        console.log(`[server]: Server is running at http://localhost:${port}`);
+    });
+};
+
+main();
