@@ -8,7 +8,9 @@ const NewRouter = (db: DatabaseRepository) => {
     const repo = NewRepository(db);
 
     // Attach User routes
-    router.route('/users/:id').get(repo.User.getUser);
+    router.route('/users/login').post(repo.User.login);
+    router.route('/users/register').post(repo.User.register);
+    router.route('/users/checkauth').get(repo.User.checkAuth);
 
     // Attach Car routes
     router.route('/cars').get(repo.Car.getCar);
