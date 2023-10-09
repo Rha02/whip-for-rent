@@ -14,6 +14,8 @@ const NewRouter = (db: DatabaseRepository) => {
     router.route('/cars').get(repo.Car.getCar);
     router.route('/cars/:id').get(repo.Car.getCar);
     router.route('/cars').post(repo.Car.postCar);
+    router.route('/cars/:id').put(repo.Car.updateCar);
+    router.route('/cars/:id').delete(repo.Car.deleteCar);
 
     return router;
 };
