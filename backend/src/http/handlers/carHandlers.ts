@@ -15,26 +15,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     // GET to /cars
     const getCars = async (req: Request, res: Response) => {
         // TODO: Get a list of cars from the db
-        const cars: Car[] = [{
-            id: 1,
-            make: 'Ford',
-            model: 'Fusion',
-            year: 2019,
-            color: 'red',
-            price: 300,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        },
-        {
-            id: 2,
-            make: 'Toyota',
-            model: 'Camry',
-            year: 2020,
-            color: 'blue',
-            price: 330,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        }];
+        const cars = await db.getCars();
 
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(cars);
@@ -43,25 +24,17 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     // GET to /cars/{id}
     const getCar = async (req: Request, res: Response) => {
         // Get the car id from the request
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
 
         // TODO: Get a car by id from the db
-        const car: Car = {
-            id: isNaN(id) ? 0 : id,
-            make: 'Ford',
-            model: 'Fusion',
-            year: 2019,
-            color: 'red',
-            price: 300,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
+        const car = await db.getCarByID(id);
 
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(car);
     };
     
     interface PostCarRequestBody {
+        id?: string;
         make?: string;
         model?: string;
         year?: number;
@@ -76,6 +49,11 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
         const body = req.body as PostCarRequestBody;
 
         // TODO: Add validation to check if car data is valid
+        if (!body.id) {
+            res.status(400).json({ message: 'Missing car license plate' });
+            return;
+        }
+
         if (!body.make) {
             res.status(400).json({ message: 'Missing car make' });
             return;
@@ -101,16 +79,17 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
             return;
         }
 
-        const car: Car = {
-            id: 0,
+        const car = await db.createCar({
+            id: body.id,
             make: body.make,
             model: body.model,
             year: body.year,
             color: body.color,
             price: body.price,
+            image_url: '',
             createdAt: new Date(),
             updatedAt: new Date()
-        };
+        });
 
         res.setHeader('Content-Type', 'application/json');
         res.status(201).json(car);
@@ -120,11 +99,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     const updateCar = async (req: Request, res: Response) => {
         // TODO: Add middleware to check if the user has access rights to update a car
 
-        const id = parseInt(req.params.id);
-        if (isNaN(id)) {
-            res.status(400).json({ message: 'Invalid car id' });
-            return;
-        }
+        const id = req.params.id;
 
         // TODO: get car with id from DB
         const car: Car = {
@@ -134,6 +109,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
             year: 2019,
             color: 'red',
             price: 300,
+            image_url: '',
             createdAt: new Date(),
             updatedAt: new Date()
         };

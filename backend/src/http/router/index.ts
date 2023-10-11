@@ -13,7 +13,7 @@ const NewRouter = (db: DatabaseRepository) => {
     router.route('/users/checkauth').get(repo.User.checkAuth);
 
     // Attach Car routes
-    router.route('/cars').get(repo.Car.getCar);
+    router.route('/cars').get(repo.Car.getCars);
     router.route('/cars/:id').get(repo.Car.getCar);
     router.route('/cars').post(repo.Car.postCar);
     router.route('/cars/:id').put(repo.Car.updateCar);

@@ -1,10 +1,11 @@
 interface Car {
-    id: number;
+    id: string;
     make: string;
     model: string;
     year: number;
     color: string;
     price: number;
+    image_url: string;
     createdAt: Date;
     updatedAt: Date;
 }
