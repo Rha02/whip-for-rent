@@ -39,10 +39,33 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return cars[0] || null;
     };
 
+    const updateCar = async (car: Car): Promise<Car | null> => {
+        // Run SQL query to update a car
+        await db.query(`
+            UPDATE cars
+            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_url = ?, updated_at = NOW()
+            WHERE id = ?
+        `, [car.make, car.model, car.year, car.color, car.price, car.image_url, car.id]);
+
+        // Run SQL query to get the updated car
+        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
+
+        const cars = rows as Car[];
+
+        return cars[0] || null;
+    };
+
+    const deleteCar = async (id: string): Promise<void> => {
+        // Run SQL query to delete a car
+        await db.query('DELETE FROM cars WHERE id = ?', [id]);
+    };
+
     return {
         getCars,
         getCarByID,
         createCar,
+        updateCar,
+        deleteCar,
         getUserByID: async (id) => {
             const user = await db.query('SELECT * FROM users WHERE id = ?', [id]);
 

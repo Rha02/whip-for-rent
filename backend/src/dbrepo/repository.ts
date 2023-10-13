@@ -10,7 +10,7 @@ interface DatabaseRepository {
     /**
      * getCarByID() returns a car by ID (License Plate)
      * @param id string
-     * @returns 
+     * @returns Car or null
      */
     getCarByID: (id: string) => Promise<Car | null>;
     
@@ -20,6 +20,20 @@ interface DatabaseRepository {
      * @returns Car or null
      */
     createCar: (car: Car) => Promise<Car | null>;
+
+    /**
+     * updateCar() updates a car in the database
+     * @param car Car object
+     * @returns Car or null
+     */
+    updateCar: (car: Car) => Promise<Car | null>;
+
+    /**
+     * deleteCar() deletes a car from the database
+     * @param id string
+     * @returns void
+     */
+    deleteCar: (id: string) => Promise<void>;
 
     getUserByID: (id: number) => Promise<User | null>;
 }

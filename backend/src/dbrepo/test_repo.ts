@@ -26,6 +26,14 @@ const NewTestRepo = (): DatabaseRepository => {
         return car;
     };
 
+    const updateCar = async (car: Car): Promise<Car | null> => {
+        return car;
+    };
+
+    const deleteCar = async (id: string): Promise<void> => {
+        console.log(`Deleting car with id ${id}`);
+    };
+
     const getUserByID = async (id: number): Promise<User | null> => {
         return {
             id: id,
@@ -42,6 +50,8 @@ const NewTestRepo = (): DatabaseRepository => {
         getCars,
         getCarByID,
         createCar,
+        updateCar,
+        deleteCar,
         getUserByID
     };
 };

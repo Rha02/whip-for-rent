@@ -6,8 +6,8 @@ interface Car {
     color: string;
     price: number;
     image_url: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export default Car;
