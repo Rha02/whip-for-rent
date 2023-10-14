@@ -1,33 +1,58 @@
+import { Car, User } from '@/models';
 import DatabaseRepository from './repository';
 
 // export function to create a new repository
 const NewTestRepo = (): DatabaseRepository => {
+
+    const getCars = async (): Promise<Car[]> => {
+        return [];
+    };
+
+    const getCarByID = async (id: string): Promise<Car | null> => {
+        return {
+            id: id,
+            make: 'Toyota',
+            model: 'Camry',
+            year: 2020,
+            color: 'White',
+            price: 25000,
+            image_url: '',
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+    };
+
+    const createCar = async (car: Car): Promise<Car | null> => {
+        return car;
+    };
+
+    const updateCar = async (car: Car): Promise<Car | null> => {
+        return car;
+    };
+
+    const deleteCar = async (id: string): Promise<void> => {
+        console.log(`Deleting car with id ${id}`);
+    };
+
+    const getUserByID = async (id: number): Promise<User | null> => {
+        return {
+            id: id,
+            email: 'bruce@wayne.loc',
+            password: 'password',
+            firstName: 'Bruce',
+            lastName: 'Wayne',
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+    };
+
     return {
-        getCarByID: async (id) => {
-            console.log("The id is" + id);
-            return {
-                id: 1,
-                make: 'Toyota',
-                model: 'Camry',
-                year: 2020,
-                color: 'White',
-                price: 25000,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            };
-        },
-        getUserByID: async (id) => {
-            console.log("The id is" + id);
-            return {
-                id: 1,
-                email: 'bruce@wayne.loc',
-                password: 'password',
-                firstName: 'Bruce',
-                lastName: 'Wayne',
-                createdAt: new Date(),
-                updatedAt: new Date()
-            };
-        }
+        getCars,
+        getCarByID,
+        createCar,
+        updateCar,
+        deleteCar,
+        getUserByID
     };
 };
 

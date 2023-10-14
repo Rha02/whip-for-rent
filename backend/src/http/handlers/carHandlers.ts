@@ -1,4 +1,3 @@
-import { Car } from '@/models';
 import DatabaseRepository from '@dbrepo/repository';
 import { Request, Response } from 'express';
 
@@ -15,26 +14,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     // GET to /cars
     const getCars = async (req: Request, res: Response) => {
         // TODO: Get a list of cars from the db
-        const cars: Car[] = [{
-            id: 1,
-            make: 'Ford',
-            model: 'Fusion',
-            year: 2019,
-            color: 'red',
-            price: 300,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        },
-        {
-            id: 2,
-            make: 'Toyota',
-            model: 'Camry',
-            year: 2020,
-            color: 'blue',
-            price: 330,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        }];
+        const cars = await db.getCars();
 
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(cars);
@@ -42,26 +22,23 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
 
     // GET to /cars/{id}
     const getCar = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
+
         // Get the car id from the request
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
 
         // TODO: Get a car by id from the db
-        const car: Car = {
-            id: isNaN(id) ? 0 : id,
-            make: 'Ford',
-            model: 'Fusion',
-            year: 2019,
-            color: 'red',
-            price: 300,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
+        const car = await db.getCarByID(id);
+        if (!car) {
+            res.status(404).json({ message: `Car with id ${id} not found` });
+            return;
+        }
 
-        res.setHeader('Content-Type', 'application/json');
         res.status(200).json(car);
     };
     
     interface PostCarRequestBody {
+        id?: string;
         make?: string;
         model?: string;
         year?: number;
@@ -71,11 +48,17 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
 
     // POST to /cars
     const postCar = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
         // TODO: Add middleware to check if the user has access rights to post a car
 
         const body = req.body as PostCarRequestBody;
 
         // TODO: Add validation to check if car data is valid
+        if (!body.id) {
+            res.status(400).json({ message: 'Missing car license plate' });
+            return;
+        }
+
         if (!body.make) {
             res.status(400).json({ message: 'Missing car make' });
             return;
@@ -101,42 +84,34 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
             return;
         }
 
-        const car: Car = {
-            id: 0,
+        const car = await db.createCar({
+            id: body.id,
             make: body.make,
             model: body.model,
             year: body.year,
             color: body.color,
             price: body.price,
+            image_url: '',
             createdAt: new Date(),
             updatedAt: new Date()
-        };
+        });
 
-        res.setHeader('Content-Type', 'application/json');
         res.status(201).json(car);
     };
 
     // PUT to /cars/{id}
     const updateCar = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
         // TODO: Add middleware to check if the user has access rights to update a car
 
-        const id = parseInt(req.params.id);
-        if (isNaN(id)) {
-            res.status(400).json({ message: 'Invalid car id' });
+        const id = req.params.id;
+
+        // Get car with id from DB
+        let car = await db.getCarByID(id);
+        if (!car) {
+            res.status(404).json({ message: `Car with id ${id} not found` });
             return;
         }
-
-        // TODO: get car with id from DB
-        const car: Car = {
-            id: id,
-            make: 'Ford',
-            model: 'Fusion',
-            year: 2019,
-            color: 'red',
-            price: 300,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
 
         const body = req.body as PostCarRequestBody;
 
@@ -151,31 +126,31 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
             return;
         }
 
-        // Update car data
-        car.make = body.make || car.make;
-        car.model = body.model || car.model;
-        car.year = body.year || car.year;
-        car.color = body.color || car.color;
-        car.price = body.price || car.price;
-        car.updatedAt = new Date();
+        // Update car in the db
+        car = await db.updateCar({
+            id: id,
+            make: body.make || car.make,
+            model: body.model || car.model,
+            year: body.year || car.year,
+            color: body.color || car.color,
+            price: body.price || car.price,
+            image_url: car.image_url
+        });
 
-        // TODO: update car in the db
-
-        res.setHeader('Content-Type', 'application/json');
         res.status(201).json(car);
     };
 
     // DELETE to /cars/{id}
     const deleteCar = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
-        if (isNaN(id)) {
-            res.status(400).json({ message: 'Invalid car id' });
-            return;
-        }
-
-        // TODO: delete car from the db
+        // TODO: Add middleware to check if the user has access rights to update a car
 
         res.setHeader('Content-Type', 'application/json');
+
+        const id = req.params.id;
+
+        // Delete car from the db
+        await db.deleteCar(id.toString());
+
         res.status(201).json({
             message: `Car with id ${id} was deleted`
         });

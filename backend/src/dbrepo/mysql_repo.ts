@@ -1,26 +1,71 @@
+import { Car } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection } from 'mysql2/promise';
 
 // export function to create a new repository
 const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     db.ping();
+
+    const getCars = async (): Promise<Car[]> => {
+        // Run SQL query to get all cars
+        const [ rows ] = await db.query('SELECT * FROM cars ORDER BY updated_at DESC');
+
+        const cars = rows as Car[];
+
+        return cars;
+    };
+
+    const getCarByID = async (id: string): Promise<Car | null> => {
+        // Run SQL query to get a car by id
+        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [id]);
+
+        const cars = rows as Car[];
+
+        return cars[0] || null;
+    };
+
+    const createCar = async (car: Car): Promise<Car | null> => {
+        // Run SQL query to create a new car
+        await db.query(`
+            INSERT INTO cars (id, make, model, year, color, price, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_url]);
+        
+        // Run SQL query to get the newly created car
+        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
+
+        const cars = rows as Car[];
+
+        return cars[0] || null;
+    };
+
+    const updateCar = async (car: Car): Promise<Car | null> => {
+        // Run SQL query to update a car
+        await db.query(`
+            UPDATE cars
+            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_url = ?, updated_at = NOW()
+            WHERE id = ?
+        `, [car.make, car.model, car.year, car.color, car.price, car.image_url, car.id]);
+
+        // Run SQL query to get the updated car
+        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
+
+        const cars = rows as Car[];
+
+        return cars[0] || null;
+    };
+
+    const deleteCar = async (id: string): Promise<void> => {
+        // Run SQL query to delete a car
+        await db.query('DELETE FROM cars WHERE id = ?', [id]);
+    };
+
     return {
-        getCarByID: async (id) => {
-            const car = await db.query('SELECT * FROM cars WHERE id = ?', [id]);
-
-            console.log(car);
-
-            return {
-                id: 1,
-                make: 'Toyota',
-                model: 'Camry',
-                year: 2020,
-                color: 'White',
-                price: 25000,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            };
-        },
+        getCars,
+        getCarByID,
+        createCar,
+        updateCar,
+        deleteCar,
         getUserByID: async (id) => {
             const user = await db.query('SELECT * FROM users WHERE id = ?', [id]);
 
