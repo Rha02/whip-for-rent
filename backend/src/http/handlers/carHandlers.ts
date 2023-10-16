@@ -1,8 +1,7 @@
-import DatabaseRepository from '@dbrepo/repository';
+import Config from '@/config';
 import { Request, Response } from 'express';
 
 interface CarRepository {
-    db: DatabaseRepository;
     getCars: (req: Request, res: Response) => Promise<void>;
     getCar: (req: Request, res: Response) => Promise<void>;
     postCar: (req: Request, res: Response) => Promise<void>;
@@ -10,11 +9,11 @@ interface CarRepository {
     deleteCar: (req: Request, res: Response) => Promise<void>;
 }
 
-const NewCarRepository = (db: DatabaseRepository): CarRepository => {
+const NewCarRepository = (app: Config): CarRepository => {
     // GET to /cars
     const getCars = async (req: Request, res: Response) => {
         // TODO: Get a list of cars from the db
-        const cars = await db.getCars();
+        const cars = await app.db.getCars();
 
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(cars);
@@ -28,7 +27,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
         const id = req.params.id;
 
         // TODO: Get a car by id from the db
-        const car = await db.getCarByID(id);
+        const car = await app.db.getCarByID(id);
         if (!car) {
             res.status(404).json({ message: `Car with id ${id} not found` });
             return;
@@ -84,7 +83,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
             return;
         }
 
-        const car = await db.createCar({
+        const car = await app.db.createCar({
             id: body.id,
             make: body.make,
             model: body.model,
@@ -107,7 +106,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
         const id = req.params.id;
 
         // Get car with id from DB
-        let car = await db.getCarByID(id);
+        let car = await app.db.getCarByID(id);
         if (!car) {
             res.status(404).json({ message: `Car with id ${id} not found` });
             return;
@@ -127,7 +126,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
         }
 
         // Update car in the db
-        car = await db.updateCar({
+        car = await app.db.updateCar({
             id: id,
             make: body.make || car.make,
             model: body.model || car.model,
@@ -149,7 +148,7 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
         const id = req.params.id;
 
         // Delete car from the db
-        await db.deleteCar(id.toString());
+        await app.db.deleteCar(id.toString());
 
         res.status(201).json({
             message: `Car with id ${id} was deleted`
@@ -157,7 +156,6 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     };
 
     return {
-        db,
         getCars,
         getCar,
         postCar,

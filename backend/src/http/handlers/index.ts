@@ -1,6 +1,6 @@
-import DatabaseRepository from '@dbrepo/repository';
 import { CarRepository, NewCarRepository } from './carHandlers';
 import { UserRepository, NewUserRepository } from './userHandlers';
+import Config from '@/config';
 
 // Export HTTP handlers here
 interface Repository {
@@ -8,10 +8,10 @@ interface Repository {
     User: UserRepository;
 }
 
-const NewRepository = (db: DatabaseRepository): Repository => {
+const NewRepository = (app: Config): Repository => {
     return {
-        Car: NewCarRepository(db),
-        User: NewUserRepository(db)
+        Car: NewCarRepository(app),
+        User: NewUserRepository(app)
     };
 };
 

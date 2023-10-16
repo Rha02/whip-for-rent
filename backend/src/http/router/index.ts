@@ -1,11 +1,11 @@
 import express from 'express';
 import { NewRepository } from '@http/handlers';
-import DatabaseRepository from '@dbrepo/repository';
+import Config from '@/config';
 
 const router = express.Router();
 
-const NewRouter = (db: DatabaseRepository) => {
-    const repo = NewRepository(db);
+const NewRouter = (app: Config) => {
+    const repo = NewRepository(app);
 
     // Attach User routes
     router.route('/users/login').post(repo.User.login);
