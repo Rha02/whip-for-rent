@@ -1,12 +1,11 @@
 import express from 'express';
 import { NewRepository } from '@http/handlers';
-import DatabaseRepository from '@dbrepo/repository';
-import { AuthTokenRepository } from '@/services/authrepo';
+import Config from '@/config';
 
 const router = express.Router();
 
-const NewRouter = (db: DatabaseRepository, authTokenRepo: AuthTokenRepository) => {
-    const repo = NewRepository(db, authTokenRepo);
+const NewRouter = (app: Config) => {
+    const repo = NewRepository(app);
 
     // Attach User routes
     router.route('/users/login').post(repo.User.login);

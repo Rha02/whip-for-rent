@@ -6,6 +6,7 @@ import cors from 'cors';
 import fs from 'fs';
 import { connectMySQL } from './driver';
 import { NewJWTAuthRepo } from './services/authrepo';
+import Config from './config';
 
 const main = async () => {
     dotenv.config();
@@ -34,10 +35,14 @@ const main = async () => {
         }
     });
 
-    const db = NewMySQLRepo(conn.MySQL);
-    const authTokenRepo = NewJWTAuthRepo(jwtSecret);
+    
+    // Set up App-wide Config
+    const appConfig: Config = {
+        db: NewMySQLRepo(conn.MySQL),
+        authTokenRepo: NewJWTAuthRepo(jwtSecret)
+    };
 
-    const router = NewRouter(db, authTokenRepo);
+    const router = NewRouter(appConfig);
 
     app.use('/', router);
 

@@ -1,5 +1,4 @@
-import { AuthTokenRepository } from '@/services/authrepo';
-import DatabaseRepository from '@dbrepo/repository';
+import Config from '@/config';
 import { Request, Response } from 'express';
 
 interface UserRepository {
@@ -8,7 +7,7 @@ interface UserRepository {
   checkAuth: (req: Request, res: Response) => Promise<void>;
 }
 
-const NewUserRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository): UserRepository => {
+const NewUserRepository = (app: Config): UserRepository => {
     const register = async (req: Request, res: Response) => {
         // Get data from request body
         const { email, password, firstName, lastName } = req.body;
@@ -25,7 +24,7 @@ const NewUserRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository
         // TODO: Create user and add to the database
 
         // Create authentication token
-        const token = authRepo.createToken({ email, firstName });
+        const token = app.authTokenRepo.createToken({ email, firstName });
 
         // Attach token to response header
         res.header('Authorization', 'Bearer ' + token);
@@ -56,7 +55,7 @@ const NewUserRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository
         // TODO: Check if user password hash matches request password hash
 
         // Create authentication token
-        const token = authRepo.createToken({ email, firstName: "dummy" });
+        const token = app.authTokenRepo.createToken({ email, firstName: "dummy" });
 
         // Attach token to response header
         res.header('Authorization', 'Bearer ' + token);
@@ -77,7 +76,7 @@ const NewUserRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository
         const cleanToken = token.replace('Bearer ', '');
 
         // TODO: Parse token with key to get the JSON object of the user
-        const payload = authRepo.parseToken(cleanToken);
+        const payload = app.authTokenRepo.parseToken(cleanToken);
         if (!payload) {
             res.status(401).send('Unauthenticated');
             return;
