@@ -1,6 +1,7 @@
 import DatabaseRepository from '@dbrepo/repository';
 import { CarRepository, NewCarRepository } from './carHandlers';
 import { UserRepository, NewUserRepository } from './userHandlers';
+import { AuthTokenRepository } from '@/services/authrepo';
 
 // Export HTTP handlers here
 interface Repository {
@@ -8,10 +9,10 @@ interface Repository {
     User: UserRepository;
 }
 
-const NewRepository = (db: DatabaseRepository): Repository => {
+const NewRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository): Repository => {
     return {
-        Car: NewCarRepository(db),
-        User: NewUserRepository(db)
+        Car: NewCarRepository(db, authRepo),
+        User: NewUserRepository(db, authRepo)
     };
 };
 

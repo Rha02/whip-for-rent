@@ -1,8 +1,8 @@
+import { AuthTokenRepository } from '@/services/authrepo';
 import DatabaseRepository from '@dbrepo/repository';
 import { Request, Response } from 'express';
 
 interface CarRepository {
-    db: DatabaseRepository;
     getCars: (req: Request, res: Response) => Promise<void>;
     getCar: (req: Request, res: Response) => Promise<void>;
     postCar: (req: Request, res: Response) => Promise<void>;
@@ -10,7 +10,9 @@ interface CarRepository {
     deleteCar: (req: Request, res: Response) => Promise<void>;
 }
 
-const NewCarRepository = (db: DatabaseRepository): CarRepository => {
+const NewCarRepository = (db: DatabaseRepository, authRepo: AuthTokenRepository): CarRepository => {
+    console.log(authRepo);
+
     // GET to /cars
     const getCars = async (req: Request, res: Response) => {
         // TODO: Get a list of cars from the db
@@ -157,7 +159,6 @@ const NewCarRepository = (db: DatabaseRepository): CarRepository => {
     };
 
     return {
-        db,
         getCars,
         getCar,
         postCar,

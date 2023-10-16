@@ -1,1 +1,3 @@
-// Export Middleware functions here
+import { requiresAuth, requiresMod } from "./auth";
+
+export { requiresAuth, requiresMod };
