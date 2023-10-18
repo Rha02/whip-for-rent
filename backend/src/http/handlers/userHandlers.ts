@@ -1,10 +1,12 @@
 import Config from '@/config';
+import { User } from '@/models';
+import { RequestWithUser } from '@/types';
 import { Request, Response } from 'express';
 
 interface UserRepository {
-  register: (req: Request, res: Response) => Promise<void>;
-  login: (req: Request, res: Response) => Promise<void>;
-  checkAuth: (req: Request, res: Response) => Promise<void>;
+    register: (req: Request, res: Response) => Promise<void>;
+    login: (req: Request, res: Response) => Promise<void>;
+    checkAuth: (req: RequestWithUser, res: Response) => Promise<void>;
 }
 
 const NewUserRepository = (app: Config): UserRepository => {
@@ -117,26 +119,12 @@ const NewUserRepository = (app: Config): UserRepository => {
         res.status(201).json(user);
     };
 
-    const checkAuth = async (req: Request, res: Response) => {
-        // Get token from request header
-        const token = req.header('Authorization') as string;
-        if(!token) {
-            res.status(401).send('Unauthenticated');
-            return;
-        }
+    const checkAuth = async (req: RequestWithUser, res: Response) => {
+        // Get authenticated user
+        const user = await req.user?.() as User;
 
-        const cleanToken = token.replace('Bearer ', '');
-
-        // TODO: Parse token with key to get the JSON object of the user
-        const payload = app.authTokenRepo.parseToken(cleanToken);
-        if (!payload) {
-            res.status(401).send('Unauthenticated');
-            return;
-        }
-
-        // Send response
         res.header('Content-Type', 'application/json');
-        res.status(200).send(payload);
+        res.status(200).send(user);
     };
 
     // Implement HTTP Request Handlers for Users here

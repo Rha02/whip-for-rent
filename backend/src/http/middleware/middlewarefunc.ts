@@ -1,8 +1,9 @@
 import Config from '@/config';
-import { Request, Response, NextFunction } from 'express';
+import { RequestWithUser } from '@/types';
+import { Response, NextFunction } from 'express';
 
 interface MiddlewareFunc {
-    (req: Request, res: Response, next: NextFunction): void;
+    (req: RequestWithUser, res: Response, next: NextFunction): Promise<void>;
 }
 
 interface AppMiddlewareFunc {

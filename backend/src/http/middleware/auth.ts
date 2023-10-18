@@ -9,7 +9,7 @@ import { AppMiddlewareFunc } from "./middlewarefunc";
  * @param res 
  * @param next 
  */
-const requiresAuth: AppMiddlewareFunc = (app) => (req, res, next) => {
+const requiresAuth: AppMiddlewareFunc = (app) => async (req, res, next) => {
     // Get authorization header from request
     const token = req.header("Authorization") as string;
     if (!token) {
@@ -26,6 +26,7 @@ const requiresAuth: AppMiddlewareFunc = (app) => (req, res, next) => {
     }
 
     // Attach function call to user object
+    req.user = () => app.db.getUserByEmail(payload.email);
 
     next();
 };
@@ -41,7 +42,7 @@ const requiresAuth: AppMiddlewareFunc = (app) => (req, res, next) => {
  * @param res 
  * @param next 
  */
-const requiresMod: AppMiddlewareFunc = (app) => (req, res, next) => {
+const requiresMod: AppMiddlewareFunc = (app) => async (req, res, next) => {
     // Get token from request header
     const token = req.header("Authorization") as string;
     if (!token) {
@@ -57,9 +58,14 @@ const requiresMod: AppMiddlewareFunc = (app) => (req, res, next) => {
         return;
     }
 
-    // TODO: Check if user is moderator
+    // Check if user is a moderator
+    if (payload.accessLevel > 2) {
+        res.status(403).send("Unauthorized");
+        return;
+    }
 
-    // TODO: Attach function call to user object
+    // Attach function call to user object
+    req.user = () => app.db.getUserByEmail(payload.email);
 
     app.authTokenRepo.parseToken(cleanToken);
     next();
