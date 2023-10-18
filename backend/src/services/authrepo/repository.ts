@@ -1,6 +1,7 @@
 interface Payload {
     email: string;
     firstName: string;
+    accessLevel: number;
 }
 
 interface AuthTokenRepository {
