@@ -9,7 +9,8 @@ CREATE TABLE users (
     last_name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    access_level INTEGER NOT NULL DEFAULT 3
 );
 
 -- Create Cars table
