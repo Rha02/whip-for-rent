@@ -57,8 +57,6 @@ const NewUserRepository = (app: Config): UserRepository => {
             firstName: body.firstName,
             lastName: body.lastName,
             password: body.password,
-            createdAt: new Date(),
-            updatedAt: new Date(),
             access_level: 3
         });
 
