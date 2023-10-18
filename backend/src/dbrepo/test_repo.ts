@@ -34,6 +34,20 @@ const NewTestRepo = (): DatabaseRepository => {
         console.log(`Deleting car with id ${id}`);
     };
 
+    const getUserByEmail= async (email: string): Promise<User | null> => {
+        return {
+            id: 12345,
+            email: email,
+            password: 'password',
+            firstName: 'Bruce',
+            lastName: 'Wayne',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            access_level: 3
+        };
+    };
+
+
     const getUserByID = async (id: number): Promise<User | null> => {
         return {
             id: id,
@@ -42,8 +56,13 @@ const NewTestRepo = (): DatabaseRepository => {
             firstName: 'Bruce',
             lastName: 'Wayne',
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            access_level: 3
         };
+    };
+
+    const createUser = async (user: User) => {
+        return user;
     };
 
     return {
@@ -52,7 +71,9 @@ const NewTestRepo = (): DatabaseRepository => {
         createCar,
         updateCar,
         deleteCar,
-        getUserByID
+        getUserByEmail,
+        getUserByID,
+        createUser
     };
 };
 

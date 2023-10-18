@@ -73,7 +73,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
     const createUser = async (user: User): Promise<User | null> => {
         // Run SQL query to create a new user
-        await db.query(`INSERT INTO users (id, email, firstName, lastName, password, access_level)
+        await db.query(`INSERT INTO users (id, email, first_name, last_name, password, access_level)
                         VALUES (?, ?, ?, ?, ?, ?)
                         `, [user.id, user.email, user.firstName, user.lastName, user.password, user.access_level]);
 
