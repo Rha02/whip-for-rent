@@ -6,6 +6,7 @@ interface User {
     password: string;
     createdAt: Date;
     updatedAt: Date;
+    access_level: number;
 }
 
 export default User;
