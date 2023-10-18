@@ -59,9 +59,17 @@ const NewUserRepository = (app: Config): UserRepository => {
             password: body.password,
             access_level: 3
         });
+        if (!user) {
+            res.status(500).send('DB error creating user');
+            return;
+        }
 
         // Create authentication token
-        const token = app.authTokenRepo.createToken({ email: body.email, firstName: body.firstName });
+        const token = app.authTokenRepo.createToken({ 
+            email: body.email, 
+            firstName: body.firstName,
+            accessLevel: user.access_level
+        });
 
         // Attach token to response header
         res.header('Authorization', 'Bearer ' + token);
@@ -90,14 +98,18 @@ const NewUserRepository = (app: Config): UserRepository => {
         // const user = await db.getUserByEmail(email);
         const user = await app.db.getUserByEmail(body.email);
         if (!user) {
-            res.status(400).send('User not found');
+            res.status(404).send('User not found');
             return;
         }
 
         // TODO: Check if user password hash matches request password hash
 
         // Create authentication token
-        const token = app.authTokenRepo.createToken({ email: user.email, firstName: user.firstName });
+        const token = app.authTokenRepo.createToken({ 
+            email: user.email, 
+            firstName: user.firstName,
+            accessLevel: user.access_level
+        });
 
         // Attach token to response header
         res.header('Authorization', 'Bearer ' + token);
