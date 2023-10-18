@@ -1,4 +1,4 @@
-import { Car } from '@/models';
+import { Car, User } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection } from 'mysql2/promise';
 
@@ -6,6 +6,7 @@ import { Connection } from 'mysql2/promise';
 const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     db.ping();
 
+    // Car Queries
     const getCars = async (): Promise<Car[]> => {
         // Run SQL query to get all cars
         const [ rows ] = await db.query('SELECT * FROM cars ORDER BY updated_at DESC');
@@ -60,12 +61,37 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         await db.query('DELETE FROM cars WHERE id = ?', [id]);
     };
 
+    // User Queries
+    const getUserByEmail = async (email: string) : Promise<User | null> => {
+        // Run SQL query to get user by email
+        const [ row ] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
+
+        const user = row as User[];
+
+        return user[0] || null;
+    };
+
+    const createUser = async (user: User): Promise<User | null> => {
+        // Run SQL query to create a new user
+        await db.query(`INSERT INTO users (id, email, firstName, lastName, password, createdAt, updatedAt, access_level)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        `, [user.id, user.email, user.firstName, user.lastName, user.password, user.createdAt, user.updatedAt, user.access_level]);
+
+        // Run SQL query to get the newly created user
+        const [ row ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
+
+        const retrievedUser = row as User[];
+
+        return retrievedUser[0] || null;
+    };
+
     return {
         getCars,
         getCarByID,
         createCar,
         updateCar,
         deleteCar,
+        getUserByEmail,
         getUserByID: async (id) => {
             const user = await db.query('SELECT * FROM users WHERE id = ?', [id]);
 
@@ -78,9 +104,11 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
                 firstName: 'Bruce',
                 lastName: 'Wayne',
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                access_level: 3
             };
-        }
+        },
+        createUser
     };
 };
 

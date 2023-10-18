@@ -35,7 +35,21 @@ interface DatabaseRepository {
      */
     deleteCar: (id: string) => Promise<void>;
 
+    /**
+     * getUserByEmail() gets a user by email
+     * @param email string
+     * @returns User or null
+     */
+    getUserByEmail: (email: string) => Promise<User | null>;
+
     getUserByID: (id: number) => Promise<User | null>;
+
+    /**
+     * createUser() creates a new user in the database
+     * @param user User object
+     * @returns User or null
+     */
+    createUser: (user: User) => Promise<User | null>;
 }
 
 export default DatabaseRepository;
