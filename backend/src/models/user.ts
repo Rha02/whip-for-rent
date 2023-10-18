@@ -4,8 +4,9 @@ interface User {
     firstName: string;
     lastName: string;
     password: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
+    access_level: number;
 }
 
 export default User;
