@@ -51,6 +51,7 @@ const NewUserRepository = (app: Config): UserRepository => {
         }
 
         // TODO: Hash password 
+        const hashPassword = await app.hashRepo.createHash(body.password);
 
         // TODO: Create user and add to the database
         const user = await app.db.createUser({
@@ -58,11 +59,11 @@ const NewUserRepository = (app: Config): UserRepository => {
             email: body.email,
             firstName: body.firstName,
             lastName: body.lastName,
-            password: body.password,
+            password: hashPassword,
             access_level: 3
         });
         if (!user) {
-            res.status(500).send('DB error creating user');
+            res.status(500).json({ message: 'DB error creating user'});
             return;
         }
 
@@ -100,11 +101,16 @@ const NewUserRepository = (app: Config): UserRepository => {
         // const user = await db.getUserByEmail(email);
         const user = await app.db.getUserByEmail(body.email);
         if (!user) {
-            res.status(404).send('User not found');
+            res.status(404).json({ message: 'User not found'});
             return;
         }
 
         // TODO: Check if user password hash matches request password hash
+        const isPassword = await app.hashRepo.verifyHash(body.password, user.password);
+        if(!isPassword) {
+            res.status(401).json({ message: 'Invalid password'});
+            return;
+        }
 
         // Create authentication token
         const token = app.authTokenRepo.createToken({ 
