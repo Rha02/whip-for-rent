@@ -27,6 +27,18 @@ CREATE TABLE cars (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create Reservations table
+DROP TABLE IF EXISTS reservations;
+CREATE TABLE reservations (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    car_id VARCHAR(255) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (car_id) REFERENCES cars(id)
+);
+
 -- Insert Dummy Car Data
 INSERT INTO cars (id, make, model, year, color, price, image_url)
 VALUES ("1234", "my_make", "my_model", 2020, "my_color", 10000, "my_image_url");
