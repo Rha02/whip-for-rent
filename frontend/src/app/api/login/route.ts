@@ -32,14 +32,18 @@ export async function POST(req: NextRequest) {
 
     // If the backend returns an error, return it to the frontend
     if (!res.ok) {
+        console.error(res.status);
         return res.json().then((data) => {
             return NextResponse.json({
-                errors: data.errors
+                errors: "TODO: Get errors from backend"
             }, {
                 status: res.status
             });
         }).catch((err) => {
-            return NextResponse.json({}, {
+            console.error(err);
+            return NextResponse.json({
+                message: "Something went wrong"
+            }, {
                 status: 500
             });
         });

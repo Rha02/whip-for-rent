@@ -24,9 +24,10 @@ export default function Login() {
 
         // Handle response
         if (res.ok) {
-            window.location.href = '/';
+            window.location.href = '/dashboard';
         } else {
             const data = await res.json();
+            console.log(data);
             if (data.errors.email) setEmailError(data.errors.email);
             if (data.errors.password) setPasswordError(data.errors.password);
             if (data.message) alert(data.message);
