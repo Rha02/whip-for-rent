@@ -1,12 +1,13 @@
 import Config from '@/config';
+import { RequestWithUser } from '@/types';
 import { Request, Response } from 'express';
 
 interface CarRepository {
     getCars: (req: Request, res: Response) => Promise<void>;
     getCar: (req: Request, res: Response) => Promise<void>;
-    postCar: (req: Request, res: Response) => Promise<void>;
-    updateCar: (req: Request, res: Response) => Promise<void>;
-    deleteCar: (req: Request, res: Response) => Promise<void>;
+    postCar: (req: RequestWithUser, res: Response) => Promise<void>;
+    updateCar: (req: RequestWithUser, res: Response) => Promise<void>;
+    deleteCar: (req: RequestWithUser, res: Response) => Promise<void>;
 }
 
 const NewCarRepository = (app: Config): CarRepository => {
@@ -46,7 +47,7 @@ const NewCarRepository = (app: Config): CarRepository => {
     }
 
     // POST to /cars
-    const postCar = async (req: Request, res: Response) => {
+    const postCar = async (req: RequestWithUser, res: Response) => {
         res.setHeader('Content-Type', 'application/json');
         // TODO: Add middleware to check if the user has access rights to post a car
 
@@ -99,7 +100,7 @@ const NewCarRepository = (app: Config): CarRepository => {
     };
 
     // PUT to /cars/{id}
-    const updateCar = async (req: Request, res: Response) => {
+    const updateCar = async (req: RequestWithUser, res: Response) => {
         res.setHeader('Content-Type', 'application/json');
         // TODO: Add middleware to check if the user has access rights to update a car
 
@@ -140,9 +141,7 @@ const NewCarRepository = (app: Config): CarRepository => {
     };
 
     // DELETE to /cars/{id}
-    const deleteCar = async (req: Request, res: Response) => {
-        // TODO: Add middleware to check if the user has access rights to update a car
-
+    const deleteCar = async (req: RequestWithUser, res: Response) => {
         res.setHeader('Content-Type', 'application/json');
 
         const id = req.params.id;

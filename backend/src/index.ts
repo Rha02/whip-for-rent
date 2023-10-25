@@ -6,6 +6,7 @@ import cors from 'cors';
 import fs from 'fs';
 import { connectMySQL } from './driver';
 import { NewJWTAuthRepo } from './services/authrepo';
+import { NewBCryptHashRepo } from './services/hashrepo';
 import Config from './config';
 
 const main = async () => {
@@ -39,7 +40,8 @@ const main = async () => {
     // Set up App-wide Config
     const appConfig: Config = {
         db: NewMySQLRepo(conn.MySQL),
-        authTokenRepo: NewJWTAuthRepo(jwtSecret)
+        authTokenRepo: NewJWTAuthRepo(jwtSecret),
+        hashRepo: NewBCryptHashRepo(10)
     };
 
     const router = NewRouter(appConfig);
