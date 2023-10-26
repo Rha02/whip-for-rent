@@ -1,4 +1,4 @@
-import { Car, User } from '@/models';
+import { Car, Reservation, User } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection } from 'mysql2/promise';
 
@@ -85,6 +85,41 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return retrievedUser[0] || null;
     };
 
+    // Reservation Queries
+    const createReservation = async (reservation: Reservation): Promise<Reservation | null> => {
+        if(reservation) {
+            return reservation;
+        } else {
+            return null;
+        }
+    };
+
+    const getUserReservations = async (userID: number): Promise<Reservation[] | null> => {
+        if(userID) {
+            const reservations: Reservation[] = [];
+            return reservations;
+        } else {
+            return null;
+        }
+    };
+
+    const getCarReservations = async (carID: string): Promise<Reservation[] | null> => {
+        if(carID) {
+            const reservations: Reservation[] = [];
+            return reservations;
+        } else {
+            return null;
+        }
+    };
+
+    const deleteReservation = async (reservationID: number): Promise<boolean> => {
+        if(reservationID) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     return {
         getCars,
         getCarByID,
@@ -108,7 +143,11 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
                 access_level: 3
             };
         },
-        createUser
+        createUser,
+        createReservation,
+        getUserReservations,
+        getCarReservations,
+        deleteReservation
     };
 };
 

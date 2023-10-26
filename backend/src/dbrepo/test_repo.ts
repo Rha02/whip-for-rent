@@ -1,4 +1,4 @@
-import { Car, User } from '@/models';
+import { Car, Reservation, User } from '@/models';
 import DatabaseRepository from './repository';
 
 // export function to create a new repository
@@ -65,6 +65,25 @@ const NewTestRepo = (): DatabaseRepository => {
         return user;
     };
 
+    const createReservation = async (reservation: Reservation) => {
+        return reservation;
+    };
+
+    const getUserReservations = async (userID: number) => {
+        const reservations: Reservation[] = [];
+        return userID ? reservations : null;
+    };
+
+    const getCarReservations = async (carID: string) => {
+        const reservations: Reservation[] = [];
+        return carID ? reservations : null;
+    };
+
+    const deleteReservation =async (reservationID: number) => {
+        return reservationID ? true : false;
+    };
+    
+
     return {
         getCars,
         getCarByID,
@@ -73,7 +92,11 @@ const NewTestRepo = (): DatabaseRepository => {
         deleteCar,
         getUserByEmail,
         getUserByID,
-        createUser
+        createUser,
+        createReservation,
+        getUserReservations,
+        getCarReservations,
+        deleteReservation
     };
 };
 
