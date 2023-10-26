@@ -1,4 +1,4 @@
-import { Car, User } from 'models';
+import { Car, Reservation, User } from 'models';
 
 interface DatabaseRepository {
     /**
@@ -35,7 +35,49 @@ interface DatabaseRepository {
      */
     deleteCar: (id: string) => Promise<void>;
 
+    /**
+     * getUserByEmail() gets a user by email
+     * @param email string
+     * @returns User or null
+     */
+    getUserByEmail: (email: string) => Promise<User | null>;
+
     getUserByID: (id: number) => Promise<User | null>;
+
+    /**
+     * createUser() creates a new user in the database
+     * @param user User object
+     * @returns User or null
+     */
+    createUser: (user: User) => Promise<User | null>;
+
+    /**
+     * createReservation() creates a new reservation in the database
+     * @param reservation Reservation object
+     * @returns Reservation or null
+     */
+    createReservation: (reservation: Reservation) => Promise<Reservation | null>;
+
+    /**
+     * getUserReservations() gets all reservations of a user 
+     * @param userID number
+     * @returns Reservation[] by user id
+     */
+    getUserReservations: (userID: number) => Promise<Reservation[] | null>;
+
+    /**
+     * getCarReservations() gets all reservations of a car
+     * @param carID string
+     * @returns Reservation[] by car id
+     */
+    getCarReservations: (carID: string) => Promise<Reservation[] | null>;
+
+    /**
+     * deleteReservation() deletes a reservation from database
+     * @param reservationID string
+     * @returns true or false
+     */
+    deleteReservation: (reservationID: number) => Promise<boolean>;
 }
 
 export default DatabaseRepository;

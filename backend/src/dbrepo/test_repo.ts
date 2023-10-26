@@ -1,4 +1,4 @@
-import { Car, User } from '@/models';
+import { Car, Reservation, User } from '@/models';
 import DatabaseRepository from './repository';
 
 // export function to create a new repository
@@ -34,6 +34,20 @@ const NewTestRepo = (): DatabaseRepository => {
         console.log(`Deleting car with id ${id}`);
     };
 
+    const getUserByEmail= async (email: string): Promise<User | null> => {
+        return {
+            id: 12345,
+            email: email,
+            password: 'password',
+            firstName: 'Bruce',
+            lastName: 'Wayne',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            access_level: 3
+        };
+    };
+
+
     const getUserByID = async (id: number): Promise<User | null> => {
         return {
             id: id,
@@ -42,9 +56,33 @@ const NewTestRepo = (): DatabaseRepository => {
             firstName: 'Bruce',
             lastName: 'Wayne',
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            access_level: 3
         };
     };
+
+    const createUser = async (user: User) => {
+        return user;
+    };
+
+    const createReservation = async (reservation: Reservation) => {
+        return reservation;
+    };
+
+    const getUserReservations = async (userID: number) => {
+        const reservations: Reservation[] = [];
+        return userID ? reservations : null;
+    };
+
+    const getCarReservations = async (carID: string) => {
+        const reservations: Reservation[] = [];
+        return carID ? reservations : null;
+    };
+
+    const deleteReservation =async (reservationID: number) => {
+        return reservationID ? true : false;
+    };
+    
 
     return {
         getCars,
@@ -52,7 +90,13 @@ const NewTestRepo = (): DatabaseRepository => {
         createCar,
         updateCar,
         deleteCar,
-        getUserByID
+        getUserByEmail,
+        getUserByID,
+        createUser,
+        createReservation,
+        getUserReservations,
+        getCarReservations,
+        deleteReservation
     };
 };
 
