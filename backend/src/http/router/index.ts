@@ -24,6 +24,12 @@ const NewRouter = (app: Config) => {
     router.route('/cars/:id').put(isMod, repo.Car.updateCar);
     router.route('/cars/:id').delete(isMod, repo.Car.deleteCar);
 
+    // Attach Reservation routes
+    router.route('/reservations').post(isAuth, repo.Reservation.reserve);
+    router.route('/reservations/:id').post(isAuth, repo.Reservation.deleteReservation);
+    router.route('/users/reservations').get(isAuth, repo.Reservation.getUserReservations);
+    router.route('/cars/:id/reservations').get(repo.Reservation.getCarReservations);
+
     return router;
 };
 
