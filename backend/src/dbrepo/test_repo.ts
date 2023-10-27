@@ -79,7 +79,7 @@ const NewTestRepo = (): DatabaseRepository => {
         return carID ? reservations : null;
     };
 
-    const deleteReservation =async (reservationID: number) => {
+    const deleteReservation = async (reservationID: number) => {
         return reservationID ? true : false;
     };
     
