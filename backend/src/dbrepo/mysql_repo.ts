@@ -1,6 +1,6 @@
 import { Car, Reservation, User } from '@/models';
 import DatabaseRepository from './repository';
-import { Connection } from 'mysql2/promise';
+import { Connection, ResultSetHeader } from 'mysql2/promise';
 
 // export function to create a new repository
 const NewMySQLRepo = (db: Connection): DatabaseRepository => {
@@ -64,11 +64,11 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // User Queries
     const getUserByEmail = async (email: string) : Promise<User | null> => {
         // Run SQL query to get user by email
-        const [ row ] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
+        const [ rows ] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
 
-        const user = row as User[];
+        const users = rows as User[];
 
-        return user[0] || null;
+        return users[0] || null;
     };
 
     const createUser = async (user: User): Promise<User | null> => {
@@ -78,46 +78,55 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
                         `, [user.id, user.email, user.firstName, user.lastName, user.password, user.access_level]);
 
         // Run SQL query to get the newly created user
-        const [ row ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
+        const [ rows ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
 
-        const retrievedUser = row as User[];
+        const retrievedUser = rows as User[];
 
         return retrievedUser[0] || null;
     };
 
     // Reservation Queries
     const createReservation = async (reservation: Reservation): Promise<Reservation | null> => {
-        if(reservation) {
-            return reservation;
-        } else {
-            return null;
-        }
+        // Run SQL query to create a new reservation 
+        await db.query(`INSERT INTO reservations (user_id, car_id, start_date, end_date)
+                        VALUES (?, ?, ?, ?)
+                        `, [reservation.user_id, reservation.car_id, reservation.start_date, reservation.end_date]);
+        
+        // Run SQL query to get the newly created reservation
+        const [ rows ] = await db.query(`SELECT * FROM reservations 
+                                         WHERE user_id = ? AND car_id = ? AND start_date = ? AND end_date = ?
+                                         `, [reservation.user_id, reservation.car_id, reservation.start_date, reservation.end_date]);
+
+        const reservations = rows as Reservation[];
+
+        return reservations[0] || null;
     };
 
     const getUserReservations = async (userID: number): Promise<Reservation[] | null> => {
-        if(userID) {
-            const reservations: Reservation[] = [];
-            return reservations;
-        } else {
-            return null;
-        }
+        // Run SQL query to get reservations by user id
+        const [ rows ] = await db.query(`SELECT * FROM reservations WHERE user_id = ?`, [userID]);
+        
+        const reservations = rows as Reservation[];
+
+        return reservations || null;
     };
 
     const getCarReservations = async (carID: string): Promise<Reservation[] | null> => {
-        if(carID) {
-            const reservations: Reservation[] = [];
-            return reservations;
-        } else {
-            return null;
-        }
+        // Run SQL query to get reservations by car id
+        const [ rows ] = await db.query(`SELECT * FROM reservations WHERE car_id = ?`, [carID]);
+        
+        const reservations = rows as Reservation[];
+        
+        return reservations || null;
     };
 
     const deleteReservation = async (reservationID: number): Promise<boolean> => {
-        if(reservationID) {
-            return true;
-        } else {
-            return false;
-        }
+        // Run SQL query to delete a reservation
+        const [ rows ] = await db.query(`DELETE FROM reservations WHERE id = ?`, reservationID);
+        
+        const { affectedRows } = rows as ResultSetHeader;
+
+        return affectedRows === 1 ? true : false;
     };
 
     return {
