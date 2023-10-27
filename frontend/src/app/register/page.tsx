@@ -1,13 +1,48 @@
 /* eslint-disable indent */
-export default function Register() {
-    async function create(formData: FormData) {
-        "use server";
-        formData = formData.get("name") as string;
-     
-        // mutate data
-        // revalidate cache
-    }
+"use client";
 
+import { useState } from "react";
+export default function Register() {
+   
+        // error fields
+        const [emailError, setEmailError] = useState<string | null>(null);
+        const [passwordError, setPasswordError] = useState<string | null>(null);
+    
+        const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+    
+            // Get form data
+            const formData = new FormData(event.currentTarget);
+            const firstName = formData.get('firstName') as string;
+            const lastName = formData.get('lastName') as string;
+            const email = formData.get('email') as string;
+            const id = formData.get('id') as unknown as number;
+            const password = formData.get('password') as string;
+            console.log(firstName);
+            console.log(lastName);
+            console.log(email);
+            console.log(id);
+            console.log(password);
+    
+            // Send register request
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, email, firstName, lastName, password }),
+            });
+    
+            // Handle response
+            if (res.ok) {
+                window.location.href = '/login';
+             } 
+            // else {
+            //     const data = await res.json();
+            //     if (data.errors.email) setEmailError(data.errors.email);
+            //     if (data.errors.password) setPasswordError(data.errors.password);
+            //     if (data.message) alert(data.message);
+            // }
+        };
+    
     return (
        
         <div className="flex justify-center w-screen h-screen bg-blue-400">
@@ -17,11 +52,16 @@ export default function Register() {
                 </div>
                 <div className="flex-col justify-center my-4">
                     
-                    <form action={create} method="post" id="form" >
+                    <form onSubmit={handleSubmit} >
                     
                     <div className="mb2  px-4 py-4">
-                        <label htmlFor="text-zinc-600 font-bold">Name <span className="text-red-600">*</span></label>
-                        <input type="text" name="name" className="border-2 rounded-lg w-full px-2 py-2" placeholder="Joe Biden" required autoFocus/>
+                        <label htmlFor="text-zinc-600 font-bold"> First Name <span className="text-red-600">*</span></label>
+                        <input type="text" name="firstName" className="border-2 rounded-lg w-full px-2 py-2" placeholder="Joe" required autoFocus/>
+                    </div>
+                    
+                    <div className="mb2  px-4 py-4">
+                        <label htmlFor="text-zinc-600 font-bold"> Last Name <span className="text-red-600">*</span></label>
+                        <input type="text" name="lastName" className="border-2 rounded-lg w-full px-2 py-2" placeholder="Biden" required autoFocus/>
                     </div>
                     
                     <div className="mb2  px-4 py-4">
@@ -30,13 +70,8 @@ export default function Register() {
                     </div>
                     
                     <div className="mb2  px-4 py-4">
-                        <label htmlFor="text-zinc-600 font-bold">DOB <span className="text-red-600">*</span></label>
-                        <input type="date" name="date" className="border-2 rounded-lg w-full px-2 py-2" placeholder="dd/mm/yyyy" required />
-                    </div>
-                    
-                    <div className="mb2  px-4 py-4">
                         <label htmlFor="text-zinc-600 font-bold">Driver License ID <span className="text-red-600">*</span></label>
-                        <input type="text" name="ID" className="border-2 rounded-lg w-full px-2 py-2" placeholder="A47D88V" required />
+                        <input type="text" name="id" className="border-2 rounded-lg w-full px-2 py-2" placeholder="A47D88V" required />
                     </div>
                     
                     <div className="mb2 px-4 py-4">
