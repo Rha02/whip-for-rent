@@ -6,8 +6,7 @@ export default function Register() {
    
         // error fields
         const [emailError, setEmailError] = useState<string | null>(null);
-        const [passwordError, setPasswordError] = useState<string | null>(null);
-    
+   
         const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
     
