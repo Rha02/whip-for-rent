@@ -1,11 +1,11 @@
 interface User {
-    id: number;
+    id: string;
     email: string;
-    firstName: string;
-    lastName: string;
+    first_Name: string;
+    last_Name: string;
     password: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    created_At?: Date;
+    updated_At?: Date;
     access_level: number;
 }
 

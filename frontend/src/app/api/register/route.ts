@@ -2,10 +2,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 interface RegisterBody {
-    firstName: string;
-    lastName: string;
+    first_Name: string;
+    last_Name: string;
     email: string;
-    id : number;
+    id : string;
     password: string;
 }
 
@@ -13,14 +13,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json() as RegisterBody;
 
     // Validate the request body
-    if (!body.email || !body.password || !body.firstName || !body.lastName || !body.id) {
+    if (!body.email || !body.password || !body.first_Name || !body.last_Name || !body.id) {
         return NextResponse.json({
             errors: {
                 id : "ID is required",
                 email: "Email is required",
                 password: "Password is required",
-                firstName: "First name is required",
-                lastName: "Last name is required",
+                first_Name: "First name is required",
+                last_Name: "Last name is required",
             }
         }, {
             status: 400

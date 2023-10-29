@@ -42,8 +42,6 @@ interface DatabaseRepository {
      */
     getUserByEmail: (email: string) => Promise<User | null>;
 
-    getUserByID: (id: number) => Promise<User | null>;
-
     /**
      * createUser() creates a new user in the database
      * @param user User object
@@ -63,7 +61,7 @@ interface DatabaseRepository {
      * @param userID number
      * @returns Reservation[] by user id
      */
-    getUserReservations: (userID: number) => Promise<Reservation[] | null>;
+    getUserReservations: (userID: string) => Promise<Reservation[] | null>;
 
     /**
      * getCarReservations() gets all reservations of a car

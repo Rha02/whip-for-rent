@@ -11,7 +11,7 @@ interface UserRepository {
 
 const NewUserRepository = (app: Config): UserRepository => {
     interface PostUserRequestBody {
-        id?: number;
+        id?: string;
         email?: string;
         password?: string;
         firstName?: string;
@@ -25,7 +25,7 @@ const NewUserRepository = (app: Config): UserRepository => {
         const body = req.body as PostUserRequestBody;
 
         // Validate data
-        if(!body.id || isNaN(body.id)) {
+        if(!body.id) {
             res.status(400).json({ message: 'Invalid driver license number' });
             return;
         }
@@ -57,8 +57,8 @@ const NewUserRepository = (app: Config): UserRepository => {
         const user = await app.db.createUser({
             id: body.id,
             email: body.email,
-            firstName: body.firstName,
-            lastName: body.lastName,
+            first_Name: body.firstName,
+            last_Name: body.lastName,
             password: hashPassword,
             access_level: 3
         });
@@ -115,7 +115,7 @@ const NewUserRepository = (app: Config): UserRepository => {
         // Create authentication token
         const token = app.authTokenRepo.createToken({ 
             email: user.email, 
-            firstName: user.firstName,
+            firstName: user.first_Name,
             accessLevel: user.access_level
         });
 
