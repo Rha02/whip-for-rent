@@ -75,7 +75,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         // Run SQL query to create a new user
         await db.query(`INSERT INTO users (id, email, first_name, last_name, password, access_level)
                         VALUES (?, ?, ?, ?, ?, ?)
-                        `, [user.id, user.email, user.firstName, user.lastName, user.password, user.access_level]);
+                        `, [user.id, user.email, user.first_Name, user.last_Name, user.password, user.access_level]);
 
         // Run SQL query to get the newly created user
         const [ rows ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
@@ -102,7 +102,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return reservations[0] || null;
     };
 
-    const getUserReservations = async (userID: number): Promise<Reservation[] | null> => {
+    const getUserReservations = async (userID: string): Promise<Reservation[] | null> => {
         // Run SQL query to get reservations by user id
         const [ rows ] = await db.query(`SELECT * FROM reservations WHERE user_id = ?`, [userID]);
         
@@ -136,22 +136,6 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         updateCar,
         deleteCar,
         getUserByEmail,
-        getUserByID: async (id) => {
-            const user = await db.query('SELECT * FROM users WHERE id = ?', [id]);
-
-            console.log(user);
-
-            return {
-                id: 1,
-                email: 'bruce@wayne.loc',
-                password: 'password',
-                firstName: 'Bruce',
-                lastName: 'Wayne',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                access_level: 3
-            };
-        },
         createUser,
         createReservation,
         getUserReservations,

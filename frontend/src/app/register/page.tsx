@@ -12,13 +12,13 @@ export default function Register() {
     
             // Get form data
             const formData = new FormData(event.currentTarget);
-            const firstName = formData.get('firstName') as string;
-            const lastName = formData.get('lastName') as string;
+            const first_Name = formData.get('firstName') as string;
+            const last_Name = formData.get('lastName') as string;
             const email = formData.get('email') as string;
-            const id = formData.get('id') as unknown as number;
+            const id = formData.get('id') as string;
             const password = formData.get('password') as string;
-            console.log(firstName);
-            console.log(lastName);
+            console.log(first_Name);
+            console.log(last_Name);
             console.log(email);
             console.log(id);
             console.log(password);
@@ -27,7 +27,7 @@ export default function Register() {
             const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, email, firstName, lastName, password }),
+                body: JSON.stringify({ id, email, first_Name, last_Name, password }),
             });
     
             // Handle response

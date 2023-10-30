@@ -36,30 +36,17 @@ const NewTestRepo = (): DatabaseRepository => {
 
     const getUserByEmail= async (email: string): Promise<User | null> => {
         return {
-            id: 12345,
+            id: "12345",
             email: email,
             password: 'password',
-            firstName: 'Bruce',
-            lastName: 'Wayne',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            first_Name: 'Bruce',
+            last_Name: 'Wayne',
+            created_At: new Date(),
+            updated_At: new Date(),
             access_level: 3
         };
     };
 
-
-    const getUserByID = async (id: number): Promise<User | null> => {
-        return {
-            id: id,
-            email: 'bruce@wayne.loc',
-            password: 'password',
-            firstName: 'Bruce',
-            lastName: 'Wayne',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            access_level: 3
-        };
-    };
 
     const createUser = async (user: User) => {
         return user;
@@ -69,7 +56,7 @@ const NewTestRepo = (): DatabaseRepository => {
         return reservation;
     };
 
-    const getUserReservations = async (userID: number) => {
+    const getUserReservations = async (userID: string) => {
         const reservations: Reservation[] = [];
         return userID ? reservations : null;
     };
@@ -91,7 +78,6 @@ const NewTestRepo = (): DatabaseRepository => {
         updateCar,
         deleteCar,
         getUserByEmail,
-        getUserByID,
         createUser,
         createReservation,
         getUserReservations,
