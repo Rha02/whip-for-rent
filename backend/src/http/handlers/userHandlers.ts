@@ -57,8 +57,8 @@ const NewUserRepository = (app: Config): UserRepository => {
         const user = await app.db.createUser({
             id: body.id,
             email: body.email,
-            first_Name: body.firstName,
-            last_Name: body.lastName,
+            first_name: body.firstName,
+            last_name: body.lastName,
             password: hashPassword,
             access_level: 3
         });
@@ -115,7 +115,7 @@ const NewUserRepository = (app: Config): UserRepository => {
         // Create authentication token
         const token = app.authTokenRepo.createToken({ 
             email: user.email, 
-            firstName: user.first_Name,
+            firstName: user.first_name,
             accessLevel: user.access_level
         });
 

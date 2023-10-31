@@ -75,7 +75,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         // Run SQL query to create a new user
         await db.query(`INSERT INTO users (id, email, first_name, last_name, password, access_level)
                         VALUES (?, ?, ?, ?, ?, ?)
-                        `, [user.id, user.email, user.first_Name, user.last_Name, user.password, user.access_level]);
+                        `, [user.id, user.email, user.first_name, user.last_name, user.password, user.access_level]);
 
         // Run SQL query to get the newly created user
         const [ rows ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
