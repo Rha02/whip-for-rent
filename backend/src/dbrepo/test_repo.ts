@@ -39,10 +39,10 @@ const NewTestRepo = (): DatabaseRepository => {
             id: "12345",
             email: email,
             password: 'password',
-            first_Name: 'Bruce',
-            last_Name: 'Wayne',
-            created_At: new Date(),
-            updated_At: new Date(),
+            first_name: 'Bruce',
+            last_name: 'Wayne',
+            created_at: new Date(),
+            updated_at: new Date(),
             access_level: 3
         };
     };
