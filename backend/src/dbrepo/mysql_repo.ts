@@ -28,9 +28,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     const createCar = async (car: Car): Promise<Car | null> => {
         // Run SQL query to create a new car
         await db.query(`
-            INSERT INTO cars (id, make, model, year, color, price, image_url)
+            INSERT INTO cars (id, make, model, year, color, price, image_name)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_url]);
+        `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_name]);
         
         // Run SQL query to get the newly created car
         const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
@@ -44,9 +44,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         // Run SQL query to update a car
         await db.query(`
             UPDATE cars
-            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_url = ?, updated_at = NOW()
+            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_name = ?, updated_at = NOW()
             WHERE id = ?
-        `, [car.make, car.model, car.year, car.color, car.price, car.image_url, car.id]);
+        `, [car.make, car.model, car.year, car.color, car.price, car.image_name, car.id]);
 
         // Run SQL query to get the updated car
         const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);

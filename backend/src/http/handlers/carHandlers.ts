@@ -11,32 +11,18 @@ interface CarRepository {
 }
 
 const NewCarRepository = (app: Config): CarRepository => {
-    // GET to /cars
-    const getCars = async (req: Request, res: Response) => {
-        // TODO: Get a list of cars from the db
-        const cars = await app.db.getCars();
+    interface ResponseCarBody {
+        id: string;
+        make: string;
+        model: string;
+        year: number;
+        color: string;
+        price: number;
+        image_url: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }
 
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(cars);
-    };
-
-    // GET to /cars/{id}
-    const getCar = async (req: Request, res: Response) => {
-        res.setHeader('Content-Type', 'application/json');
-
-        // Get the car id from the request
-        const id = req.params.id;
-
-        // TODO: Get a car by id from the db
-        const car = await app.db.getCarByID(id);
-        if (!car) {
-            res.status(404).json({ message: `Car with id ${id} not found` });
-            return;
-        }
-
-        res.status(200).json(car);
-    };
-    
     interface PostCarRequestBody {
         id?: string;
         make?: string;
@@ -46,10 +32,70 @@ const NewCarRepository = (app: Config): CarRepository => {
         price?: number;
     }
 
+    const getCars = async (req: Request, res: Response) => {
+        // Get a list of cars from the db
+        const cars = await app.db.getCars();
+
+        // Create response body 
+        const resBody: Promise<ResponseCarBody>[] = cars.map((car) => {
+            return app.imageStorage.getFileUrl(car.image_name).then((image_url) => {
+                return {
+                    id: car.id,
+                    make: car.make,
+                    model: car.model,
+                    year: car.year,
+                    color: car.color,
+                    price: car.price,
+                    image_url: image_url,
+                    createdAt: car.createdAt || new Date(),
+                    updatedAt: car.updatedAt || new Date()
+                };
+            });
+        });
+
+        // Await all promises
+        const resBodyResolved = await Promise.all(resBody);
+
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(resBodyResolved);
+    };
+
+    // GET to /cars/{id}
+    const getCar = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
+
+        // Get the car id from the request
+        const id = req.params.id;
+
+        // Get a car by id from the db
+        const car = await app.db.getCarByID(id);
+        if (!car) {
+            res.status(404).json({ message: `Car with id ${id} not found` });
+            return;
+        }
+
+        // Get image url from the image storage
+        const image_url = await app.imageStorage.getFileUrl(car.image_name);
+
+        // Construct response body
+        const resBody: ResponseCarBody = {
+            id: car.id,
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            color: car.color,
+            price: car.price,
+            image_url: image_url,
+            createdAt: car.createdAt || new Date(),
+            updatedAt: car.updatedAt || new Date()
+        };
+
+        res.status(200).json(resBody);
+    };
+
     // POST to /cars
     const postCar = async (req: RequestWithUser, res: Response) => {
         res.setHeader('Content-Type', 'application/json');
-        // TODO: Add middleware to check if the user has access rights to post a car
 
         const body = req.body as PostCarRequestBody;
 
@@ -84,6 +130,13 @@ const NewCarRepository = (app: Config): CarRepository => {
             return;
         }
 
+        // handle image submission
+        let image_name = '';
+        const image = req.file;
+        if (image) {
+            image_name = await app.imageStorage.uploadFile(image);
+        }
+
         const car = await app.db.createCar({
             id: body.id,
             make: body.make,
@@ -91,12 +144,28 @@ const NewCarRepository = (app: Config): CarRepository => {
             year: body.year,
             color: body.color,
             price: body.price,
-            image_url: '',
-            createdAt: new Date(),
-            updatedAt: new Date()
+            image_name: image_name
         });
+        if (!car) {
+            res.status(500).json({ message: 'Failed to create car' });
+            return;
+        }
 
-        res.status(201).json(car);
+        const image_url = await app.imageStorage.getFileUrl(car.image_name);
+
+        const resBody: ResponseCarBody = {
+            id: car.id,
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            color: car.color,
+            price: car.price,
+            image_url: image_url,
+            createdAt: car.createdAt || new Date(),
+            updatedAt: car.updatedAt || new Date()
+        };
+
+        res.status(201).json(resBody);
     };
 
     // PUT to /cars/{id}
@@ -126,6 +195,16 @@ const NewCarRepository = (app: Config): CarRepository => {
             return;
         }
 
+        // handle image submission
+        let image_name = '';
+        const image = req.file;
+        if (image) {
+            image_name = await app.imageStorage.uploadFile(image);
+        }
+
+        // Delete old car image from the image storage
+        await app.imageStorage.deleteFile(car.image_name);
+
         // Update car in the db
         car = await app.db.updateCar({
             id: id,
@@ -134,10 +213,30 @@ const NewCarRepository = (app: Config): CarRepository => {
             year: body.year || car.year,
             color: body.color || car.color,
             price: body.price || car.price,
-            image_url: car.image_url
+            image_name: image_name || car.image_name
         });
+        if (!car) {
+            res.status(500).json({ message: 'Failed to update car' });
+            return;
+        }
 
-        res.status(201).json(car);
+        // Get image url from the image storage
+        const image_url = await app.imageStorage.getFileUrl(car.image_name);
+
+        // Construct response body
+        const resBody: ResponseCarBody = {
+            id: car.id,
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            color: car.color,
+            price: car.price,
+            image_url: image_url,
+            createdAt: car.createdAt || new Date(),
+            updatedAt: car.updatedAt || new Date()
+        };
+
+        res.status(201).json(resBody);
     };
 
     // DELETE to /cars/{id}
@@ -145,6 +244,14 @@ const NewCarRepository = (app: Config): CarRepository => {
         res.setHeader('Content-Type', 'application/json');
 
         const id = req.params.id;
+        const car = await app.db.getCarByID(id);
+        if (!car) {
+            res.status(404).json({ message: `Car with id ${id} not found` });
+            return;
+        }
+
+        // Delete car image from the image storage
+        await app.imageStorage.deleteFile(car.image_name);
 
         // Delete car from the db
         await app.db.deleteCar(id.toString());

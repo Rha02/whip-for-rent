@@ -16,7 +16,7 @@ const NewTestRepo = (): DatabaseRepository => {
             year: 2020,
             color: 'White',
             price: 25000,
-            image_url: '',
+            image_name: '',
             createdAt: new Date(),
             updatedAt: new Date()
         };
