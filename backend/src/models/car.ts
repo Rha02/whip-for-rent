@@ -5,7 +5,7 @@ interface Car {
     year: number;
     color: string;
     price: number;
-    image_url: string;
+    image_name: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

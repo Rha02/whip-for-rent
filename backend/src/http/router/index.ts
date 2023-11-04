@@ -2,6 +2,7 @@ import express from 'express';
 import { NewRepository } from '@http/handlers';
 import Config from '@/config';
 import { requiresAuth, requiresMod } from '../middleware';
+import multer from 'multer';
 
 const router = express.Router();
 
@@ -12,6 +13,10 @@ const NewRouter = (app: Config) => {
     const isMod = requiresMod(app);
     const isAuth = requiresAuth(app);
 
+    // Create multer middleware for uploading files
+    const inMemoryStorage = multer.memoryStorage();
+    const uploadStrategy = multer({ storage: inMemoryStorage }).single('image');
+
     // Attach User routes
     router.route('/users/login').post(repo.User.login);
     router.route('/users/register').post(repo.User.register);
@@ -20,8 +25,8 @@ const NewRouter = (app: Config) => {
     // Attach Car routes
     router.route('/cars').get(repo.Car.getCars);
     router.route('/cars/:id').get(repo.Car.getCar);
-    router.route('/cars').post(isMod, repo.Car.postCar);
-    router.route('/cars/:id').put(isMod, repo.Car.updateCar);
+    router.route('/cars').post(isMod, uploadStrategy, repo.Car.postCar);
+    router.route('/cars/:id').put(isMod, uploadStrategy, repo.Car.updateCar);
     router.route('/cars/:id').delete(isMod, repo.Car.deleteCar);
 
     // Attach Reservation routes
