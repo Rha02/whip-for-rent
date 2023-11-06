@@ -1,4 +1,5 @@
-import { Car, Reservation, User } from '@/models';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Car, Reservation, User, car_location } from '@/models';
 import DatabaseRepository from './repository';
 
 // export function to create a new repository
@@ -70,6 +71,18 @@ const NewTestRepo = (): DatabaseRepository => {
         return reservationID ? true : false;
     };
     
+    const deleteLocation = async (id: number): Promise<void> => {
+        console.log(`Deleting location with id ${id}`);
+    };
+
+    const getLocations = async (): Promise<car_location[]> => {
+        return [];
+    };
+
+
+
+ 
+    
 
     return {
         getCars,
@@ -82,7 +95,12 @@ const NewTestRepo = (): DatabaseRepository => {
         createReservation,
         getUserReservations,
         getCarReservations,
-        deleteReservation
+        deleteReservation,
+        deleteLocation,
+        getLocations
+
+        // createLocation,
+
     };
 };
 

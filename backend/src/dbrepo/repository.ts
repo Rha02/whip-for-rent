@@ -1,4 +1,4 @@
-import { Car, Reservation, User } from 'models';
+import { Car, Reservation, User, car_location } from 'models';
 
 interface DatabaseRepository {
     /**
@@ -76,6 +76,26 @@ interface DatabaseRepository {
      * @returns true or false
      */
     deleteReservation: (reservationID: number) => Promise<boolean>;
+
+    /**
+     * deleteReservation() deletes a location from database
+     * @param id number
+     * @returns void
+     */
+    deleteLocation: (id: number) => Promise<void>;
+
+    /**
+     * createLocation() creates a new location in the database
+     * @param location location object
+     * @returns Reservation or null
+     */
+    // createLocation: (car_location: car_location) => Promise<car_location | null>;
+
+     /**
+     * getLocations() gets all locations
+     * @returns locations
+     */
+     getLocations: () => Promise<car_location[]>;
 }
 
 export default DatabaseRepository;

@@ -1,4 +1,4 @@
-import { Car, Reservation, User } from '@/models';
+import { Car, Reservation, User, car_location } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection, ResultSetHeader } from 'mysql2/promise';
 
@@ -129,6 +129,33 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return affectedRows === 1 ? true : false;
     };
 
+    // Location Queries
+    const getLocations = async (): Promise<car_location[]> => {
+        // Run SQL query to get all locations
+        const [ rows ] = await db.query('SELECT * FROM locations ORDER BY updated_at DESC');
+
+        const locations = rows as car_location[];
+
+        return locations;
+    };
+
+    // const createLocation = async (car_location: car_location): Promise<car_location | null> => {
+    //     // Run SQL query to create location
+    //     const [rows] = await db.query('INSERT INTO locations (city, state) VALUES (?,?)', [car_location.city, car_location.state]);
+    
+    //     const newLocation = rows as car_location[];
+    
+    //     return newLocation || null;
+    // };
+
+    
+    const deleteLocation = async (id: number): Promise<void> => {
+        // Run SQL query to delete a location
+        await db.query('DELETE FROM locations WHERE id = ?', [id]);
+    };
+
+
+
     return {
         getCars,
         getCarByID,
@@ -140,7 +167,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         createReservation,
         getUserReservations,
         getCarReservations,
-        deleteReservation
+        deleteReservation,
+        getLocations,
+        deleteLocation
     };
 };
 
