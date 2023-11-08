@@ -1,4 +1,4 @@
-import MyComponent from "@/lib/mycomponent";
+import { Navbar } from "@/lib/components";
 
 export default function DashboardLayout({
     children,
@@ -6,8 +6,8 @@ export default function DashboardLayout({
     children: React.ReactNode
 }) {
     return (
-        <div>
-            <MyComponent />
+        <div className="h-full">
+            <Navbar />
             <section>{children}</section>
             <h1> THIS IS END of MY Layout</h1>
         </div>
