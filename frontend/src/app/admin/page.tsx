@@ -61,15 +61,41 @@ export default function AdminDashboard() {
                         Locations
                     </button>
                 </nav>
-                <div>
-                    {page === "users" && users.map((user) => (
-                        <div key={user.id}>
-                            {user.email}
+                <div className="mt-4">
+                    {page === "users" && (
+                        <div className="grid grid-rows-1 justify-center">
+                            <div>
+                                <form>
+                                    <div className="flex flex-wrap justify-center gap-2">
+                                        <div className="flex rounded-lg border border-gray-300 bg-gray-300 align-center">
+                                            <label htmlFor="license" className="px-1 py-0.5">Driver License</label>
+                                            <input name="license" type="text" className="px-1 bg-gray-50 w-28" />
+                                        </div>
+                                        <div className="flex rounded-lg border border-gray-300 bg-gray-300 align-center">
+                                            <label htmlFor="last_name" className="px-1 py-0.5">Email</label>
+                                            <input name="last_name" type="email" className="px-1 bg-gray-50 w-28" />
+                                        </div>
+                                        <div className="flex rounded-lg border border-gray-300 bg-gray-300 align-center">
+                                            <label htmlFor="first_name" className="px-1 py-0.5">First Name</label>
+                                            <input name="first_name" type="text" className="px-1 bg-gray-50 w-28" />
+                                        </div>
+                                        <div className="flex rounded-lg border border-gray-300 bg-gray-300 align-center">
+                                            <label htmlFor="last_name" className="px-1 py-0.5">Last Name</label>
+                                            <input name="last_name" type="text" className="px-1 bg-gray-50 w-28" />
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                    <button type="submit">Search</button>
+                                </form>
+                            </div>
+                            <div>
+                                List of users goes here
+                            </div>
                         </div>
-                    ))}
+                    )}
                     {page === "cars" && cars.map((car) => (
                         <div key={car.id}>
-                            {car.make} {car.model}
+                            
                         </div>
                     ))}
                 </div>
