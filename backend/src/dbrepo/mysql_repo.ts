@@ -132,7 +132,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // Location Queries
     const getLocations = async (): Promise<CarLocation[]> => {
         // Run SQL query to get all locations
-        const [ rows ] = await db.query('SELECT * FROM CarLocation ORDER BY updated_at DESC');
+        const [ rows ] = await db.query('SELECT * FROM car_locations');
 
         const locations = rows as CarLocation[];
 
@@ -141,7 +141,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
  
     const deleteLocation = async (id: number): Promise<void> => {
         // Run SQL query to delete a location
-        await db.query('DELETE FROM CarLocations WHERE id = ?', [id]);
+        await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
     };
 
     // const updateLocation = async (CarLocation:CarLocation): Promise<CarLocation[]> => {
@@ -152,9 +152,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // };
 
     const updateLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
-        await db.query('UPDATE CarLocation SET city = ? WHERE id = ?', [CarLocation.city, CarLocation.id]);
+        await db.query('UPDATE car_locations SET city = ? WHERE id = ?', [CarLocation.city, CarLocation.id]);
         // Run SQL query to get the updated car
-        const [ rows ] = await db.query('SELECT * FROM CarLocation WHERE id = ?', [CarLocation.id]);
+        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE id = ?', [CarLocation.id]);
 
         const locations = rows as CarLocation[];
 
@@ -162,9 +162,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     };
     
     const createLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
-        await db.query('INSERT INTO CarLocation (city) VALUES (?)', [CarLocation.city]);
+        await db.query('INSERT INTO car_locations (city) VALUES (?)', [CarLocation.city]);
         // Run SQL query to get the updated car
-        const [ rows ] = await db.query('SELECT * FROM CarLocation WHERE id = ?', [CarLocation.id]);
+        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE city = ?', [CarLocation.city]);
 
         const locations = rows as CarLocation[];
 

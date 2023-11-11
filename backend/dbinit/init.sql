@@ -40,10 +40,9 @@ CREATE TABLE reservations (
 );
 
 -- Create Locations table
-DROP TABLE IF EXISTS CarLocation;
-CREATE TABLE CarLocation (
+DROP TABLE IF EXISTS car_location;
+CREATE TABLE car_location (
     id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
     city VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id) REFERENCES cars(id)
 );
 
