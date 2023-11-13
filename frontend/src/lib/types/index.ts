@@ -4,6 +4,9 @@ export type Car = {
     model: string,
     year: number,
     price: number,
+    color: string,
+    createdAt?: Date;
+    updatedAt?: Date;
 };
 
 export type User = {
@@ -15,3 +18,16 @@ export type User = {
     updated_at?: Date;
     access_level: number;
 }
+
+export type Reservation = {
+    id: string;
+    user_id: string;
+    car_id: string;
+    start_date: Date;
+    end_date: Date;
+};
+
+export type CarLocation = {
+    id: string;
+    city: string;
+};
