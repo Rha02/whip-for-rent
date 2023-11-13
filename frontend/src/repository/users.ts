@@ -1,10 +1,17 @@
 import { User } from "@/lib/types";
 
+interface UserGetFilter {
+    fname?: string;
+    lname?: string;
+    email?: string;
+    license?: string;
+}
+
 interface UserRepository {
     /**
      * getUsers() gets a list of all users
      */
-    getUsers(): Promise<User[]>;
+    getUsers(filter: UserGetFilter): Promise<User[]>;
 
     /**
      * deleteUser() deletes a user by id
@@ -21,9 +28,14 @@ interface UserRepository {
 }
 
 const NewUserRepository = (host: string): UserRepository => {
-    const getUsers = async (): Promise<User[]> => {
+    const getUsers = async (filter: UserGetFilter): Promise<User[]> => {
         try {
-            const response = await fetch(`${host}/users`);
+            const url = new URL(`${host}/users`);
+            if (filter.fname) url.searchParams.append("fname", filter.fname);
+            if (filter.lname) url.searchParams.append("lname", filter.lname);
+            if (filter.email) url.searchParams.append("email", filter.email);
+            if (filter.license) url.searchParams.append("license", filter.license);
+            const response = await fetch(url.toString());
             return await response.json();
         } catch (error) {
             console.error(error);
