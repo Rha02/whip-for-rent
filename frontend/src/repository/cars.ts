@@ -1,12 +1,14 @@
 import { Car } from "@/lib/types";
 
 interface getCarsParams {
+    id?: string;
     make?: string;
     model?: string;
     year?: string;
     color?: string;
     start?: string;
     end?: string;
+    location_id?: string;
 }
 
 interface CarRepository {
@@ -36,12 +38,14 @@ const NewCarRepository = (host: string): CarRepository => {
     const getCars = async (params?: getCarsParams): Promise<Car[]> => {
         const url = new URL(`${host}/cars`);
         if (params) {
+            if (params.id) url.searchParams.append("id", params.id);
             if (params.make) url.searchParams.append("make", params.make);
             if (params.model) url.searchParams.append("model", params.model);
             if (params.year) url.searchParams.append("year", params.year);
             if (params.color) url.searchParams.append("color", params.color);
             if (params.start) url.searchParams.append("start", params.start.toString());
             if (params.end) url.searchParams.append("end", params.end.toString());
+            if (params.location_id) url.searchParams.append("location_id", params.location_id);
         }
         console.log(url.href);
 
