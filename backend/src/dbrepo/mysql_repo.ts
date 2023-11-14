@@ -141,6 +141,13 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
  
     const deleteLocation = async (id: number): Promise<void> => {
         // Run SQL query to delete a location
+    
+        // if (isNaN(id)) {
+        //     console.error('Invalid id:', id);
+        //     // Handle the error as needed
+        //     return;
+        // }
+        
         await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
     };
 

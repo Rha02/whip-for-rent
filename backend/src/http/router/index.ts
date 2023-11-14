@@ -37,9 +37,9 @@ const NewRouter = (app: Config) => {
 
     // Attach CarLocation routes
     router.route('/locations').post(repo.CarLocation.createLocation);
-    router.route('/locations').delete(repo.CarLocation.deleteLocation);
+    router.route('/locations/:id').delete(repo.CarLocation.deleteLocation);
     router.route('/locations').get(repo.CarLocation.getLocations);
-    router.route('/locations').put(repo.CarLocation.updateLocation);
+    router.route('/locations/:id').put(repo.CarLocation.updateLocation);
 
     return router;
 };
