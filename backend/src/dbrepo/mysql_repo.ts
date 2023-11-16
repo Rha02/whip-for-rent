@@ -1,4 +1,4 @@
-import { Car, Reservation, User } from '@/models';
+import { Car, Reservation, User, CarLocation } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection, ResultSetHeader } from 'mysql2/promise';
 
@@ -129,6 +129,55 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return affectedRows === 1 ? true : false;
     };
 
+    // Location Queries
+    const getLocations = async (): Promise<CarLocation[]> => {
+        // Run SQL query to get all locations
+        const [ rows ] = await db.query('SELECT * FROM car_locations');
+
+        const locations = rows as CarLocation[];
+
+        return locations;
+    };
+ 
+    const deleteLocation = async (id: number): Promise<void> => {
+        // Run SQL query to delete a location
+    
+        // if (isNaN(id)) {
+        //     console.error('Invalid id:', id);
+        //     // Handle the error as needed
+        //     return;
+        // }
+        
+        await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
+    };
+
+    // const updateLocation = async (CarLocation:CarLocation): Promise<CarLocation[]> => {
+    //     // Run SQL query to update a location
+    //     const [rows] = await db.query('UPDATE CarLocation SET city = ? WHERE id = ?', [CarLocation.city, CarLocation.id]);
+    //     const location = rows as CarLocation[];
+    //     return location;
+    // };
+
+    const updateLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
+        await db.query('UPDATE car_locations SET city = ? WHERE id = ?', [CarLocation.city, CarLocation.id]);
+        // Run SQL query to get the updated car
+        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE id = ?', [CarLocation.id]);
+
+        const locations = rows as CarLocation[];
+
+        return locations || null;
+    };
+    
+    const createLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
+        await db.query('INSERT INTO car_locations (city) VALUES (?)', [CarLocation.city]);
+        // Run SQL query to get the updated car
+        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE city = ?', [CarLocation.city]);
+
+        const locations = rows as CarLocation[];
+
+        return locations || null;
+    };
+
     return {
         getCars,
         getCarByID,
@@ -140,7 +189,11 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         createReservation,
         getUserReservations,
         getCarReservations,
-        deleteReservation
+        deleteReservation,
+        getLocations,
+        deleteLocation,
+        updateLocation,
+        createLocation
     };
 };
 

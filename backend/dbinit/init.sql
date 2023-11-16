@@ -38,3 +38,11 @@ CREATE TABLE reservations (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (car_id) REFERENCES cars(id)
 );
+
+-- Create Locations table
+DROP TABLE IF EXISTS car_location;
+CREATE TABLE car_location (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    city VARCHAR(255) NOT NULL,
+);
+
