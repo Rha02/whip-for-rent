@@ -140,6 +140,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     };
  
     const deleteLocation = async (id: number): Promise<void> => {
+        // Run SQL query to delete a location
         await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
     };
 
