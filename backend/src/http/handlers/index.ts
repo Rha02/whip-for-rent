@@ -1,7 +1,7 @@
 import { CarRepository, NewCarRepository } from './carHandlers';
 import { UserRepository, NewUserRepository } from './userHandlers';
 import { ReservationRepository, NewReservationRepository } from './reservationHandlers';
-import { CarLocationRepository, NewCarLocationRepository } from './CarLocationHandlers';
+import { CarLocationRepository, NewCarLocationRepository } from './carLocationHandlers';
 import Config from '@/config';
 
 

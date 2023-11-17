@@ -91,11 +91,6 @@ const NewTestRepo = (): DatabaseRepository => {
         
     };
 
-
-
- 
-    
-
     return {
         getCars,
         getCarByID,
