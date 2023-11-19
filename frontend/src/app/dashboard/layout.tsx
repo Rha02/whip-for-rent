@@ -9,6 +9,7 @@ export default function DashboardLayout({
         <div className="h-full">
             <Navbar />
             <section>{children}</section>
+            <div className="h-24"></div>
         </div>
     );
 }
