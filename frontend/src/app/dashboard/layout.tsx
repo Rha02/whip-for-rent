@@ -1,4 +1,4 @@
-import { Navbar } from "@/lib/components";
+import Navbar from "@/lib/components/server/navbar";
 
 export default function DashboardLayout({
     children,
@@ -9,7 +9,7 @@ export default function DashboardLayout({
         <div className="h-full">
             <Navbar />
             <section>{children}</section>
-            <h1> THIS IS END of MY Layout</h1>
+            <div className="h-24"></div>
         </div>
     );
 }
