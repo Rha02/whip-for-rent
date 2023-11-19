@@ -1,4 +1,5 @@
 "use client";
+import { CarCard } from "@/lib/components/client";
 import { Cog } from "@/lib/icons";
 import { Car } from "@/lib/types";
 import { CarRepo } from "@/repository";
@@ -106,14 +107,12 @@ export default function Dashboard() {
                     )}
                 </form>
             </div>
-            <div>
-                {cars.map((car) => (
-                    <div key={car.id}>
-                        <h2>{car.make} {car.model}</h2>
-                        <p>{car.year}</p>
-                        <p>{car.price}</p>
-                    </div>
-                ))}
+            <div className="flex justify-center mt-8">
+                <div className="grid grid-cols-5 w-3/4 gap-4">
+                    {cars.map((car) => (
+                        <CarCard car={car} key={car.id} />
+                    ))}
+                </div>
             </div>
         </main>
     );

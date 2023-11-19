@@ -1,4 +1,5 @@
 import { Car } from "@/lib/types";
+import cars from "@/testdata/cars";
 
 interface getCarsParams {
     id?: string;
@@ -49,8 +50,10 @@ const NewCarRepository = (host: string): CarRepository => {
         }
         console.log(url.href);
 
-        const response = await fetch(url.href);
-        return response.json();
+        // const response = await fetch(url.href);
+        // return response.json();
+
+        return cars;
     };
 
     const getMakeModels = async (make: string): Promise<string[]> => {
