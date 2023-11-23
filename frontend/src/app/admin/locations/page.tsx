@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 type CreateLocationModalProps = {
     onClose: () => void;
+    onLocationCreated: (location: CarLocation) => void;
 };
 
 const CreateLocationModal = (props: CreateLocationModalProps) => {
@@ -16,6 +17,7 @@ const CreateLocationModal = (props: CreateLocationModalProps) => {
             city,
             id: ""
         }).then((res) => {
+            props.onLocationCreated(res);
             props.onClose();
         }).catch((err) => console.log(err));
     };
@@ -72,6 +74,10 @@ export default function LocationsPanel() {
         LocationRepo.getLocations(query).then((res) => setLocations(res)).catch((err) => console.log(err));
     };
 
+    const handleLocationCreated = (location: CarLocation) => {
+        setLocations([...locations, location]);
+    };
+
     return (
         <div>
             <div className="flex justify-center">
@@ -121,7 +127,7 @@ export default function LocationsPanel() {
                     </div>
                 ))}
             </div>
-            { showCreateModal && <CreateLocationModal onClose={() => setShowCreateModal(false)} />}
+            { showCreateModal && <CreateLocationModal onClose={() => setShowCreateModal(false)} onLocationCreated={handleLocationCreated} />}
         </div>
     );
 }

@@ -20,15 +20,25 @@ interface LocationRepository {
     /**
      * addLocation() takes a location object and adds it to the backend.
      */
-    addLocation(location: CarLocation): Promise<boolean>;
+    addLocation(location: CarLocation): Promise<CarLocation>;
 }
 
 const NewLocationRepository = (host: string): LocationRepository => {
     console.log(host);
 
     const getLocations = async (query: getLocationsParams): Promise<CarLocation[]> => {
-        console.log(query);
-        return locations;
+        return fetch(`${host}/locations`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(async (res) => {
+            const data = await res.json();
+            console.log(data);
+            return data;
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     const deleteLocation = async (id: string): Promise<boolean> => {
@@ -36,9 +46,20 @@ const NewLocationRepository = (host: string): LocationRepository => {
         return true;
     };
 
-    const addLocation = async (location: CarLocation): Promise<boolean> => {
-        console.log(location);
-        return true;
+    const addLocation = async (location: CarLocation): Promise<CarLocation> => {
+        return fetch(`${host}/locations`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(location)
+        }).then(async (res) => {
+            const data = await res.json();
+            console.log(data);
+            return data[0];
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     return {
