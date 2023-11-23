@@ -28,6 +28,6 @@ export type Reservation = {
 };
 
 export type CarLocation = {
-    id: string;
+    id?: string;
     city: string;
 };

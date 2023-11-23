@@ -16,6 +16,11 @@ interface LocationRepository {
      * deleteLocation() takes a location id and deletes it from the backend.
      */
     deleteLocation(id: string): Promise<boolean>;
+
+    /**
+     * addLocation() takes a location object and adds it to the backend.
+     */
+    addLocation(location: CarLocation): Promise<boolean>;
 }
 
 const NewLocationRepository = (host: string): LocationRepository => {
@@ -31,9 +36,15 @@ const NewLocationRepository = (host: string): LocationRepository => {
         return true;
     };
 
+    const addLocation = async (location: CarLocation): Promise<boolean> => {
+        console.log(location);
+        return true;
+    };
+
     return {
         getLocations,
-        deleteLocation
+        deleteLocation,
+        addLocation
     };
 };
 

@@ -3,8 +3,54 @@ import { CarLocation } from "@/lib/types";
 import { LocationRepo } from "@/repository";
 import { useEffect, useState } from "react";
 
+type CreateLocationModalProps = {
+    onClose: () => void;
+};
+
+const CreateLocationModal = (props: CreateLocationModalProps) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const city = formData.get("city") as string;
+        LocationRepo.addLocation({
+            city,
+            id: ""
+        }).then((res) => {
+            props.onClose();
+        }).catch((err) => console.log(err));
+    };
+
+    return (
+        <div className="relative z-10 w-full h-full">
+            <div className="fixed inset-0 bg-gray-500 opacity-75 transition-opacity"></div>
+            <div className="fixed inset-0 flex justify-center items-center min-h-full">
+                <div className="bg-white rounded-lg w-1/4 px-4 py-4">
+                    <h2 className="text-center text-xl">
+                        Creating a New Location
+                    </h2>
+                    <form className="mt-2" onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="city">City</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="text" name="city" placeholder="city" required />
+                        </div>
+                        <div className="flex justify-center gap-4 mt-2">
+                            <button type="submit" className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                                Create
+                            </button>
+                            <button type="button" onClick={props.onClose} className="px-2 py-1 text-red-500 hover:text-red-600">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function LocationsPanel() {
     const [locations, setLocations] = useState<CarLocation[]>([]);
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     useEffect(() => {
         LocationRepo.getLocations({}).then((res) => setLocations(res)).catch((err) => console.log(err));
@@ -44,7 +90,7 @@ export default function LocationsPanel() {
                         <button type="submit" className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition ease-in-out duration-150">
                             Search
                         </button>
-                        <button type="submit" className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition ease-in-out duration-150">
+                        <button type="submit" onClick={() => setShowCreateModal(true)} className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition ease-in-out duration-150">
                             Create
                         </button>
                     </div>
@@ -75,6 +121,7 @@ export default function LocationsPanel() {
                     </div>
                 ))}
             </div>
+            { showCreateModal && <CreateLocationModal onClose={() => setShowCreateModal(false)} />}
         </div>
     );
 }

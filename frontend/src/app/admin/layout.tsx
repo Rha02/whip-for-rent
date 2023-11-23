@@ -9,12 +9,13 @@ export default function AdminLayout({
     const pathname = usePathname();
     // Get current page from server-side
     const isActive = (href: string) => pathname === href;
+    const linkStyle = "py-2 border-l border-r border-t rounded-t-lg grow text-center ";
 
     const links = [
-        { href: "/admin/users", name: "Users", color: "blue-500" },
-        { href: "/admin/cars", name: "Cars", color: "red-500" },
-        { href: "/admin/reservations", name: "Reservations", color: "green-500" },
-        { href: "/admin/locations", name: "Locations", color: "yellow-500" }
+        { href: "/admin/users", name: "Users", attrs: linkStyle + (isActive("/admin/users") ? "bg-red-500 text-white" : "text-red-500 border-red-500") },
+        { href: "/admin/cars", name: "Cars", attrs: linkStyle + (isActive("/admin/cars") ? "bg-blue-500 text-white" :  "text-blue-500 border-blue-500")},
+        { href: "/admin/reservations", name: "Reservations", attrs: linkStyle + (isActive("/admin/reservations") ? "bg-green-500 text-white" : "text-green-500 border-green-500")},
+        { href: "/admin/locations", name: "Locations", attrs: linkStyle + (isActive("/admin/locations") ? "bg-yellow-500 text-white" : "text-yellow-500 border-yellow-500")}
     ];
 
     return (
@@ -30,10 +31,7 @@ export default function AdminLayout({
                         <nav className="flex justify-between border-b-2 border-gray-400 gap-2 px-4 font-bold">
                             {links.map((link, idx) => (
                                 <a key={idx}
-                                    className={
-                                        `${isActive(link.href) ? "bg-"+link.color+" text-white" : "text-"+link.color} 
-                                        py-2 border-l border-r border-t border-${link.color} rounded-t-lg grow text-center`
-                                    }
+                                    className={link.attrs}
                                     href={link.href}>
                                     {link.name}
                                 </a>
