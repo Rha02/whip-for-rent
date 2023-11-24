@@ -1,13 +1,109 @@
 "use client";
-import { Car } from "@/lib/types";
-import { CarRepo } from "@/repository";
+import { Car, CarLocation } from "@/lib/types";
+import { CarRepo, LocationRepo } from "@/repository";
 import { useEffect, useState } from "react";
+
+type CreateCarModalProps = {
+    onClose: () => void;
+    onCarCreated: (car: Car) => void;
+    locations: CarLocation[];
+};
+
+const CreateCarModal = (props: CreateCarModalProps) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const license = formData.get("license") as string;
+        const make = formData.get("make") as string;
+        const model = formData.get("model") as string;
+        const year = parseInt(formData.get("year") as string);
+        const color = formData.get("color") as string;
+        const price = parseFloat(formData.get("price") as string);
+        const image = formData.get("image") as File;
+        const location = formData.get("location") as string;
+        CarRepo.addCar({
+            id: license,
+            make: make,
+            model: model,
+            year: year,
+            price: price,
+            color: color,
+            image: image,
+            location_id: location
+        }).then((res) => {
+            props.onCarCreated(res);
+            props.onClose();
+        }).catch((err) => console.log(err));
+    };
+
+    return (
+        <div className="relative z-10 w-full h-full">
+            <div className="fixed inset-0 bg-gray-500 opacity-75 transition-opacity"></div>
+            <div className="fixed inset-0 flex justify-center items-center min-h-full">
+                <div className="bg-white rounded-lg w-1/4 px-4 py-4">
+                    <h2 className="text-center text-xl">
+                        Creating a New Location
+                    </h2>
+                    <form className="mt-2" onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="licence">License Plate</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="text" name="license" placeholder="licence plate" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="make">Make</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="text" name="make" placeholder="make" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="model">Model</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="text" name="model" placeholder="model" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="year">Year</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="number" name="year" placeholder="year" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="image">Image</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded " type="file" name="image" placeholder="image" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="color">Color</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="text" name="color" placeholder="color" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="price">Price</label>
+                            <input className="px-2 py-1 bg-gray-100 rounded" type="number" name="price" placeholder="price" required />
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            <label className="text-gray-600 font-semibold" htmlFor="location">Location</label>
+                            <select className="px-2 py-1 bg-gray-100 rounded" name="location" required>
+                                {props.locations.map((location) => (
+                                    <option key={location.id} value={location.id}>{location.city}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex justify-center gap-4 mt-2">
+                            <button type="submit" className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                                Create
+                            </button>
+                            <button type="button" onClick={props.onClose} className="px-2 py-1 text-red-500 hover:text-red-600">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default function CarsPanel() {
     const [cars, setCars] = useState<Car[]>([]);
+    const [locations, setLocations] = useState<CarLocation[]>([]);
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     useEffect(() => {
         CarRepo.getCars({}).then((res) => setCars(res)).catch((err) => console.log(err));
+        LocationRepo.getLocations({}).then((res) => setLocations(res)).catch((err) => console.log(err));
     }, []);
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,6 +131,10 @@ export default function CarsPanel() {
         if (location && location.trim().length > 0) query.location_id = location.trim();
 
         CarRepo.getCars(query).then((res) => setCars(res)).catch((err) => console.log(err));
+    };
+
+    const handleCarCreated = (car: Car) => {
+        setCars([...cars, car]);
     };
 
     return (
@@ -72,7 +172,7 @@ export default function CarsPanel() {
                         <button type="submit" className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition ease-in-out duration-150">
                             Search
                         </button>
-                        <button type="submit" className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition ease-in-out duration-150">
+                        <button type="submit" onClick={() => setShowCreateModal(true)} className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition ease-in-out duration-150">
                             Create
                         </button>
                     </div>
@@ -139,6 +239,7 @@ export default function CarsPanel() {
                     </div>
                 ))}
             </div>
+            {showCreateModal && <CreateCarModal onClose={() => setShowCreateModal(false)} onCarCreated={handleCarCreated} locations={locations} />}
         </div>
     );
 }

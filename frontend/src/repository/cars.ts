@@ -12,6 +12,17 @@ interface getCarsParams {
     location_id?: string;
 }
 
+type addCarParams = {
+    id: string;
+    make: string;
+    model: string;
+    year: number;
+    price: number;
+    color: string;
+    location_id: string;
+    image: File;
+}
+
 interface CarRepository {
     /**
      * getCars() returns a list of cars from the backend.
@@ -33,6 +44,11 @@ interface CarRepository {
      * getColors() returns a list of car colors from the backend.
      */
     getColors(): Promise<string[]>;
+
+    /**
+     * addCar() takes a car object and adds it to the backend.
+     */
+    addCar(car: addCarParams): Promise<Car>;
 }
 
 const NewCarRepository = (host: string): CarRepository => {
@@ -71,7 +87,11 @@ const NewCarRepository = (host: string): CarRepository => {
         return response.json();
     };
 
-    return { getCars, getMakeModels, getMakes, getColors };
+    const addCar = async (car: addCarParams): Promise<Car> => {
+        return car as Car;
+    };
+
+    return { getCars, getMakeModels, getMakes, getColors, addCar};
 };
 
 export default NewCarRepository;
