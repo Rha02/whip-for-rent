@@ -1,5 +1,6 @@
 import { Car } from "@/lib/types";
 import cars from "@/testdata/cars";
+import { cookies } from "next/headers";
 
 interface getCarsParams {
     id?: string;
@@ -10,6 +11,17 @@ interface getCarsParams {
     start?: string;
     end?: string;
     location_id?: string;
+}
+
+type addCarParams = {
+    id: string;
+    make: string;
+    model: string;
+    year: number;
+    price: number;
+    color: string;
+    location_id: string;
+    image: File;
 }
 
 interface CarRepository {
@@ -33,6 +45,11 @@ interface CarRepository {
      * getColors() returns a list of car colors from the backend.
      */
     getColors(): Promise<string[]>;
+
+    /**
+     * addCar() takes a car object and adds it to the backend.
+     */
+    addCar(car: addCarParams): Promise<Car>;
 }
 
 const NewCarRepository = (host: string): CarRepository => {
@@ -50,10 +67,18 @@ const NewCarRepository = (host: string): CarRepository => {
         }
         console.log(url.href);
 
-        // const response = await fetch(url.href);
-        // return response.json();
-
-        return cars;
+        return fetch(url.href, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then(async (res) => {
+            const data = await res.json();
+            console.log(data);
+            return data;
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     const getMakeModels = async (make: string): Promise<string[]> => {
@@ -71,7 +96,44 @@ const NewCarRepository = (host: string): CarRepository => {
         return response.json();
     };
 
-    return { getCars, getMakeModels, getMakes, getColors };
+    const addCar = async (car: addCarParams): Promise<Car> => {
+        const formData = new FormData();
+        formData.append("id", car.id);
+        formData.append("make", car.make);
+        formData.append("model", car.model);
+        formData.append("year", car.year.toString());
+        formData.append("price", car.price.toString());
+        formData.append("color", car.color);
+        formData.append("location_id", car.location_id);
+        formData.append("image", car.image);
+
+        // get token from cookies
+        console.log(document.cookie);
+        let token = document.cookie.split("; ").find(row => row.startsWith("authtoken"));
+        if (!token) {
+            throw new Error("No token found");
+        }
+        token = token.split("=")[1];
+        token = token.replace(/%20/g, " ");
+
+        console.log(token);
+
+        return fetch(`${host}/cars`, {
+            method: "POST",
+            headers: {
+                "Authorization": token
+            },
+            body: formData
+        }).then(async (res) => {
+            const data = await res.json();
+            console.log(data);
+            return data;
+        }).catch((err) => {
+            console.log(err);
+        });
+    };
+
+    return { getCars, getMakeModels, getMakes, getColors, addCar};
 };
 
 export default NewCarRepository;

@@ -5,6 +5,8 @@ export type Car = {
     year: number,
     price: number,
     color: string,
+    location_id: string,
+    image_url: string,
     createdAt?: Date;
     updatedAt?: Date;
 };
@@ -28,6 +30,6 @@ export type Reservation = {
 };
 
 export type CarLocation = {
-    id: string;
+    id?: string;
     city: string;
 };

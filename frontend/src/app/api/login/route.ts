@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     // Set the cookie in the response
     const response = NextResponse.json({});
     response.cookies.set("authtoken", token, {
-        httpOnly: true,
+        httpOnly: false,
         path: "/",
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
     });
