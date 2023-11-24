@@ -6,6 +6,7 @@ export type Car = {
     price: number,
     color: string,
     location_id: string,
+    image_url: string,
     createdAt?: Date;
     updatedAt?: Date;
 };

@@ -9,7 +9,7 @@ export default function CarCard(props: CarCardProps) {
     return (
         <div className="shadow p-4">
             <div className="flex justify-center bg-gray-200 rounded">
-                <Image src="" 
+                <Image src={props.car.image_url} 
                     alt="Car Image" 
                     width={400} 
                     height={400} 
