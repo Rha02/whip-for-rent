@@ -18,6 +18,7 @@ const NewTestRepo = (): DatabaseRepository => {
             color: 'White',
             price: 25000,
             image_name: '',
+            location_id: 1,
             createdAt: new Date(),
             updatedAt: new Date()
         };
@@ -79,6 +80,13 @@ const NewTestRepo = (): DatabaseRepository => {
         return [];
     };
 
+    const getLocationByID = async (id: number): Promise<CarLocation | null> => {
+        return {
+            id: id,
+            city: 'New York'
+        };
+    };
+
     const updateLocation =async (CarLocation: CarLocation): Promise<CarLocation[] | null> => {
         const location: CarLocation[] = [];
         return CarLocation ? location : null;
@@ -105,6 +113,7 @@ const NewTestRepo = (): DatabaseRepository => {
         deleteReservation,
         deleteLocation,
         getLocations,
+        getLocationByID,
         updateLocation,
         createLocation
 

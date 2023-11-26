@@ -28,9 +28,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     const createCar = async (car: Car): Promise<Car | null> => {
         // Run SQL query to create a new car
         await db.query(`
-            INSERT INTO cars (id, make, model, year, color, price, image_name)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_name]);
+            INSERT INTO cars (id, make, model, year, color, price, image_name, location_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_name, car.location_id]);
         
         // Run SQL query to get the newly created car
         const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
@@ -44,9 +44,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         // Run SQL query to update a car
         await db.query(`
             UPDATE cars
-            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_name = ?, updated_at = NOW()
+            SET make = ?, model = ?, year = ?, color = ?, price = ?, image_name = ?, location_id = ?, updated_at = NOW()
             WHERE id = ?
-        `, [car.make, car.model, car.year, car.color, car.price, car.image_name, car.id]);
+        `, [car.make, car.model, car.year, car.color, car.price, car.image_name, car.location_id, car.id]);
 
         // Run SQL query to get the updated car
         const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
@@ -138,9 +138,21 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
         return locations;
     };
+
+    const getLocationByID = async (id: number): Promise<CarLocation | null> => {
+        // Run SQL query to get a location by id
+        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE id = ?', [id]);
+
+        const locations = rows as CarLocation[];
+
+        return locations[0] || null;
+    };
  
     const deleteLocation = async (id: number): Promise<void> => {
-        // Run SQL query to delete a location
+        // Delete all cars with the deleted location id
+        await db.query('DELETE FROM cars WHERE location_id = ?', [id]);
+
+        // Delete the location
         await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
     };
 
@@ -155,7 +167,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return locations || null;
     };
     
-    const createLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
+    const createLocation = async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
         await db.query('INSERT INTO car_locations (city) VALUES (?)', [CarLocation.city]);
         
         // Run SQL query to get the updated car
@@ -179,6 +191,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         getCarReservations,
         deleteReservation,
         getLocations,
+        getLocationByID,
         deleteLocation,
         updateLocation,
         createLocation

@@ -13,7 +13,7 @@ interface DatabaseRepository {
      * @returns Car or null
      */
     getCarByID: (id: string) => Promise<Car | null>;
-    
+
     /**
      * createCar() creates a new car in the database
      * @param car Car object
@@ -84,26 +84,33 @@ interface DatabaseRepository {
      */
     deleteLocation: (id: number) => Promise<void>;
 
-     /**
-     * getLocations() gets all locations
-     * @returns locations
-     */
-     getLocations: () => Promise<CarLocation[]>;
+    /**
+    * getLocations() gets all locations
+    * @returns locations
+    */
+    getLocations: () => Promise<CarLocation[]>;
 
-     /**
-     * updateLocation() updates a location in the database
-     * @param CarLocation location object
-     * @returns updated location
+    /**
+     * getLocationByID() gets a location by ID
+     * @param id number
+     * @returns location or null
      */
+    getLocationByID: (id: number) => Promise<CarLocation | null>;
+
+    /**
+    * updateLocation() updates a location in the database
+    * @param CarLocation location object
+    * @returns updated location
+    */
     updateLocation: (CarLocation: CarLocation) => Promise<CarLocation[] | null>;
 
-    
-     /**
-     * createLocation() updates a location in the database
-     * @param CarLocation Location object
-     * @returns created location
-     */
-     createLocation: (CarLocation: CarLocation) => Promise<CarLocation[] | null>;
+
+    /**
+    * createLocation() updates a location in the database
+    * @param CarLocation Location object
+    * @returns created location
+    */
+    createLocation: (CarLocation: CarLocation) => Promise<CarLocation[] | null>;
 }
 
 export default DatabaseRepository;
