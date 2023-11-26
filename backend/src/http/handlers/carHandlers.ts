@@ -19,6 +19,7 @@ const NewCarRepository = (app: Config): CarRepository => {
         color: string;
         price: number;
         image_url: string;
+        location_id: number;
         createdAt: Date;
         updatedAt: Date;
     }
@@ -30,6 +31,7 @@ const NewCarRepository = (app: Config): CarRepository => {
         year?: number;
         color?: string;
         price?: number;
+        location_id?: number;
     }
 
     const getCars = async (req: Request, res: Response) => {
@@ -46,9 +48,10 @@ const NewCarRepository = (app: Config): CarRepository => {
                     year: car.year,
                     color: car.color,
                     price: car.price,
+                    location_id: car.location_id,
                     image_url: image_url,
-                    createdAt: car.createdAt || new Date(),
-                    updatedAt: car.updatedAt || new Date()
+                    createdAt: car.createdAt as Date,
+                    updatedAt: car.updatedAt as Date
                 };
             });
         });
@@ -77,8 +80,15 @@ const NewCarRepository = (app: Config): CarRepository => {
         // Get image url from the image storage
         const image_url = await app.imageStorage.getFileUrl(car.image_name);
 
+        // Get location from the db
+        const location = await app.db.getLocationByID(car.location_id);
+        if (!location) {
+            res.status(404).json({ message: `Location with id ${car.location_id} not found` });
+            return;
+        }
+
         // Construct response body
-        const resBody: ResponseCarBody = {
+        const resBody = {
             id: car.id,
             make: car.make,
             model: car.model,
@@ -86,8 +96,9 @@ const NewCarRepository = (app: Config): CarRepository => {
             color: car.color,
             price: car.price,
             image_url: image_url,
-            createdAt: car.createdAt || new Date(),
-            updatedAt: car.updatedAt || new Date()
+            location: location.city,
+            createdAt: car.createdAt as Date,
+            updatedAt: car.updatedAt as Date
         };
 
         res.status(200).json(resBody);
@@ -130,6 +141,18 @@ const NewCarRepository = (app: Config): CarRepository => {
             return;
         }
 
+        if (!body.location_id) {
+            res.status(400).json({ message: 'Missing car location' });
+            return;
+        }
+
+        // Check if car already exists
+        const carExists = await app.db.getCarByID(body.id);
+        if (carExists) {
+            res.status(400).json({ message: `Car with id ${body.id} already exists` });
+            return;
+        }
+
         // handle image submission
         let image_name = '';
         const image = req.file;
@@ -144,7 +167,8 @@ const NewCarRepository = (app: Config): CarRepository => {
             year: body.year,
             color: body.color,
             price: body.price,
-            image_name: image_name
+            image_name: image_name,
+            location_id: body.location_id
         });
         if (!car) {
             res.status(500).json({ message: 'Failed to create car' });
@@ -153,7 +177,7 @@ const NewCarRepository = (app: Config): CarRepository => {
 
         const image_url = await app.imageStorage.getFileUrl(car.image_name);
 
-        const resBody: ResponseCarBody = {
+        const resBody = {
             id: car.id,
             make: car.make,
             model: car.model,
@@ -161,8 +185,9 @@ const NewCarRepository = (app: Config): CarRepository => {
             color: car.color,
             price: car.price,
             image_url: image_url,
-            createdAt: car.createdAt || new Date(),
-            updatedAt: car.updatedAt || new Date()
+            location_id: car.location_id,
+            createdAt: car.createdAt as Date,
+            updatedAt: car.updatedAt as Date
         };
 
         res.status(201).json(resBody);
@@ -171,7 +196,6 @@ const NewCarRepository = (app: Config): CarRepository => {
     // PUT to /cars/{id}
     const updateCar = async (req: RequestWithUser, res: Response) => {
         res.setHeader('Content-Type', 'application/json');
-        // TODO: Add middleware to check if the user has access rights to update a car
 
         const id = req.params.id;
 
@@ -196,14 +220,13 @@ const NewCarRepository = (app: Config): CarRepository => {
         }
 
         // handle image submission
-        let image_name = '';
+        let image_name = car.image_name;
         const image = req.file;
         if (image) {
             image_name = await app.imageStorage.uploadFile(image);
+            // Delete old car image from the image storage
+            await app.imageStorage.deleteFile(car.image_name);
         }
-
-        // Delete old car image from the image storage
-        await app.imageStorage.deleteFile(car.image_name);
 
         // Update car in the db
         car = await app.db.updateCar({
@@ -213,7 +236,8 @@ const NewCarRepository = (app: Config): CarRepository => {
             year: body.year || car.year,
             color: body.color || car.color,
             price: body.price || car.price,
-            image_name: image_name || car.image_name
+            image_name: image_name || car.image_name,
+            location_id: body.location_id || car.location_id
         });
         if (!car) {
             res.status(500).json({ message: 'Failed to update car' });
@@ -232,8 +256,9 @@ const NewCarRepository = (app: Config): CarRepository => {
             color: car.color,
             price: car.price,
             image_url: image_url,
-            createdAt: car.createdAt || new Date(),
-            updatedAt: car.updatedAt || new Date()
+            location_id: car.location_id,
+            createdAt: car.createdAt as Date,
+            updatedAt: car.updatedAt as Date
         };
 
         res.status(201).json(resBody);

@@ -6,6 +6,7 @@ interface Car {
     color: string;
     price: number;
     image_name: string;
+    location_id: number;
     createdAt?: Date;
     updatedAt?: Date;
 }
