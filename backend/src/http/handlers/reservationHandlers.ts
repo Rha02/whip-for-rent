@@ -91,7 +91,14 @@ const NewReservationRepository = (app: Config): ReservationRepository => {
 
         const reservations = await app.db.getCarReservations(id);
 
-        res.status(200).json(reservations);
+        const resBody = reservations.map((reservation) => {
+            return {
+                startDate: reservation.start_date,
+                endDate: reservation.end_date
+            };
+        });
+
+        res.status(200).json(resBody);
     };
 
     return {

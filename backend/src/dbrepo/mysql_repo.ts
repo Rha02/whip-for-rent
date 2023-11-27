@@ -111,13 +111,13 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return reservations || null;
     };
 
-    const getCarReservations = async (carID: string): Promise<Reservation[] | null> => {
+    const getCarReservations = async (carID: string): Promise<Reservation[]> => {
         // Run SQL query to get reservations by car id
         const [ rows ] = await db.query(`SELECT * FROM reservations WHERE car_id = ?`, [carID]);
         
         const reservations = rows as Reservation[];
         
-        return reservations || null;
+        return reservations;
     };
 
     const deleteReservation = async (reservationID: number): Promise<boolean> => {
