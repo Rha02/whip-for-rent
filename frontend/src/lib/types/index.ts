@@ -11,6 +11,10 @@ export type Car = {
     updatedAt?: Date;
 };
 
+export type CarWithLocation = Car & {
+    location: string;
+};
+
 export type User = {
     id: string;
     email: string;

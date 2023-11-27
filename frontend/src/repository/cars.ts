@@ -1,6 +1,4 @@
-import { Car } from "@/lib/types";
-import cars from "@/testdata/cars";
-import { cookies } from "next/headers";
+import { Car, CarWithLocation } from "@/lib/types";
 
 interface getCarsParams {
     id?: string;
@@ -30,6 +28,11 @@ interface CarRepository {
      * @param params 
      */
     getCars(params?: getCarsParams): Promise<Car[]>;
+
+    /**
+     * getCar() returns a car from the backend.
+     */
+    getCar(id: string): Promise<CarWithLocation | null>;
 
     /**
      * getCarMakes() takes a car make and returns a list of car models from the backend.
@@ -133,7 +136,15 @@ const NewCarRepository = (host: string): CarRepository => {
         });
     };
 
-    return { getCars, getMakeModels, getMakes, getColors, addCar};
+    const getCar = async (id: string): Promise<CarWithLocation | null> => {
+        const response = await fetch(`${host}/cars/${id}`);
+        if (response.status === 404) {
+            return null;
+        }
+        return response.json();
+    };
+
+    return { getCars, getMakeModels, getMakes, getColors, addCar, getCar };
 };
 
 export default NewCarRepository;
