@@ -1,6 +1,6 @@
 "use client";
 import { Car, CarWithLocation } from "@/lib/types";
-import { CarRepo } from "@/repository";
+import { CarRepo, ReservationRepo } from "@/repository";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import DatePicker from "tailwind-datepicker-react";
@@ -8,8 +8,9 @@ import { IOptions } from "tailwind-datepicker-react/types/Options";
 
 export default function ReserveCar({ params }: { params: { id: string } }) {
     const [car, setCar] = useState<CarWithLocation | null>(null);
-    const [show1, setShow1] = useState<boolean>(false);
-    const [show2, setShow2] = useState<boolean>(false);
+    const [reservations, setReservations] = useState<any[]>([]);
+    const [showStart, setShowStart] = useState<boolean>(false);
+    const [showEnd, setShowEnd] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
 
@@ -19,7 +20,7 @@ export default function ReserveCar({ params }: { params: { id: string } }) {
         clearBtn: true,
         clearBtnText: "Clear",
         maxDate: new Date("2030-01-01"),
-        minDate: new Date("1950-01-01"),
+        minDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
         datepickerClassNames: "top-12",
         defaultDate: new Date(),
         language: "en",
@@ -37,14 +38,24 @@ export default function ReserveCar({ params }: { params: { id: string } }) {
     // Fetch cars from the backend
     useEffect(() => {
         CarRepo.getCar(params.id).then(res => setCar(res));
+        ReservationRepo.getCarReservations(params.id).then(res => console.log(res));
     }, [params.id]);
 
     const reserveHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        ReservationRepo.addReservation({
+            car_id: params.id,
+            start_date: startDate,
+            end_date: endDate
+        }).then(res => console.log(res));
     };
 
-    const handleChange = (newDate: Date) => {
-        console.log(newDate);
+    const handleStartChange = (newDate: Date) => {
+        setStartDate(newDate);
+    };
+
+    const handleEndChange = (newDate: Date) => {
+        setEndDate(newDate);
     };
 
     return (
@@ -71,6 +82,7 @@ export default function ReserveCar({ params }: { params: { id: string } }) {
                                 </h6>
                                 <h6 className="text-lg">{car.color}</h6>
                                 <h6 className="text-lg">{car.location}</h6>
+                                <h6>License Plate: {car.id}</h6>
                             </div>
                         </div>
                         <form onSubmit={reserveHandler} className="mt-4 text-xl">
@@ -79,11 +91,11 @@ export default function ReserveCar({ params }: { params: { id: string } }) {
                                 <span className="text-teal-800 font-semibold px-1">
                                     From
                                 </span>
-                                <DatePicker classNames="w-96" options={options} onChange={handleChange} show={show1} setShow={() => setShow1(!show1)} />
+                                <DatePicker classNames="w-96" options={options} onChange={handleStartChange} show={showStart} setShow={() => setShowStart(!showStart)} />
                                 <span className="text-teal-800 font-semibold px-1">
                                     To
                                 </span>
-                                <DatePicker classNames="w-96" options={options} onChange={handleChange} show={show2} setShow={() => setShow2(!show2)} />
+                                <DatePicker classNames="w-96" options={options} onChange={handleEndChange} show={showEnd} setShow={() => setShowEnd(!showEnd)} />
                             </div>
                             <button className="mt-4 text-lg rounded-lg px-3 py-2 text-white bg-blue-500 hover:bg-blue-600 transition ease-in-out" type="submit">
                                 Reserve

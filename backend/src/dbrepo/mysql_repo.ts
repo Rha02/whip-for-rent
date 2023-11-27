@@ -9,7 +9,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // Car Queries
     const getCars = async (): Promise<Car[]> => {
         // Run SQL query to get all cars
-        const [ rows ] = await db.query('SELECT * FROM cars ORDER BY updated_at DESC');
+        const [rows] = await db.query('SELECT * FROM cars ORDER BY updated_at DESC');
 
         const cars = rows as Car[];
 
@@ -18,7 +18,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
     const getCarByID = async (id: string): Promise<Car | null> => {
         // Run SQL query to get a car by id
-        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [id]);
+        const [rows] = await db.query('SELECT * FROM cars WHERE id = ?', [id]);
 
         const cars = rows as Car[];
 
@@ -31,9 +31,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
             INSERT INTO cars (id, make, model, year, color, price, image_name, location_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `, [car.id, car.make, car.model, car.year, car.color, car.price, car.image_name, car.location_id]);
-        
+
         // Run SQL query to get the newly created car
-        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
+        const [rows] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
 
         const cars = rows as Car[];
 
@@ -49,7 +49,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         `, [car.make, car.model, car.year, car.color, car.price, car.image_name, car.location_id, car.id]);
 
         // Run SQL query to get the updated car
-        const [ rows ] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
+        const [rows] = await db.query('SELECT * FROM cars WHERE id = ?', [car.id]);
 
         const cars = rows as Car[];
 
@@ -62,9 +62,9 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     };
 
     // User Queries
-    const getUserByEmail = async (email: string) : Promise<User | null> => {
+    const getUserByEmail = async (email: string): Promise<User | null> => {
         // Run SQL query to get user by email
-        const [ rows ] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
+        const [rows] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
 
         const users = rows as User[];
 
@@ -78,7 +78,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
                         `, [user.id, user.email, user.first_name, user.last_name, user.password, user.access_level]);
 
         // Run SQL query to get the newly created user
-        const [ rows ] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
+        const [rows] = await db.query(`SELECT * FROM users WHERE id = ?`, [user.id]);
 
         const retrievedUser = rows as User[];
 
@@ -88,14 +88,15 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // Reservation Queries
     const createReservation = async (reservation: Reservation): Promise<Reservation | null> => {
         // Run SQL query to create a new reservation 
-        await db.query(`INSERT INTO reservations (user_id, car_id, start_date, end_date)
-                        VALUES (?, ?, ?, ?)
-                        `, [reservation.user_id, reservation.car_id, reservation.start_date, reservation.end_date]);
+        const res = await db.query(`
+            INSERT INTO reservations (user_id, car_id, start_date, end_date) VALUES (?, ?, ?, ?)
+            `, [reservation.user_id, reservation.car_id, reservation.start_date, reservation.end_date]);
         
+        // Get the id of the newly created reservation
+        const reservationID = (res[0] as ResultSetHeader).insertId;
+
         // Run SQL query to get the newly created reservation
-        const [ rows ] = await db.query(`SELECT * FROM reservations 
-                                         WHERE user_id = ? AND car_id = ? AND start_date = ? AND end_date = ?
-                                         `, [reservation.user_id, reservation.car_id, reservation.start_date, reservation.end_date]);
+        const [rows] = await db.query(`SELECT * FROM reservations WHERE id = ?`, [reservationID]);
 
         const reservations = rows as Reservation[];
 
@@ -104,8 +105,8 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
     const getUserReservations = async (userID: string): Promise<Reservation[] | null> => {
         // Run SQL query to get reservations by user id
-        const [ rows ] = await db.query(`SELECT * FROM reservations WHERE user_id = ?`, [userID]);
-        
+        const [rows] = await db.query(`SELECT * FROM reservations WHERE user_id = ?`, [userID]);
+
         const reservations = rows as Reservation[];
 
         return reservations || null;
@@ -113,17 +114,17 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
     const getCarReservations = async (carID: string): Promise<Reservation[]> => {
         // Run SQL query to get reservations by car id
-        const [ rows ] = await db.query(`SELECT * FROM reservations WHERE car_id = ?`, [carID]);
-        
+        const [rows] = await db.query(`SELECT * FROM reservations WHERE car_id = ?`, [carID]);
+
         const reservations = rows as Reservation[];
-        
+
         return reservations;
     };
 
     const deleteReservation = async (reservationID: number): Promise<boolean> => {
         // Run SQL query to delete a reservation
-        const [ rows ] = await db.query(`DELETE FROM reservations WHERE id = ?`, reservationID);
-        
+        const [rows] = await db.query(`DELETE FROM reservations WHERE id = ?`, reservationID);
+
         const { affectedRows } = rows as ResultSetHeader;
 
         return affectedRows === 1 ? true : false;
@@ -132,7 +133,7 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     // Location Queries
     const getLocations = async (): Promise<CarLocation[]> => {
         // Run SQL query to get all locations
-        const [ rows ] = await db.query('SELECT * FROM car_locations');
+        const [rows] = await db.query('SELECT * FROM car_locations');
 
         const locations = rows as CarLocation[];
 
@@ -141,13 +142,13 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
 
     const getLocationByID = async (id: number): Promise<CarLocation | null> => {
         // Run SQL query to get a location by id
-        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE id = ?', [id]);
+        const [rows] = await db.query('SELECT * FROM car_locations WHERE id = ?', [id]);
 
         const locations = rows as CarLocation[];
 
         return locations[0] || null;
     };
- 
+
     const deleteLocation = async (id: number): Promise<void> => {
         // Delete all cars with the deleted location id
         await db.query('DELETE FROM cars WHERE location_id = ?', [id]);
@@ -156,22 +157,22 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         await db.query('DELETE FROM car_locations WHERE id = ?', [id]);
     };
 
-    const updateLocation =async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
+    const updateLocation = async (CarLocation: CarLocation): Promise<CarLocation[] | null> => {
         await db.query('UPDATE car_locations SET city = ? WHERE id = ?', [CarLocation.city, CarLocation.id]);
 
         // Run SQL query to get the updated car
-        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE id = ?', [CarLocation.id]);
+        const [rows] = await db.query('SELECT * FROM car_locations WHERE id = ?', [CarLocation.id]);
 
         const locations = rows as CarLocation[];
 
         return locations || null;
     };
-    
-    const createLocation = async (CarLocation:CarLocation): Promise<CarLocation[] | null> => {
+
+    const createLocation = async (CarLocation: CarLocation): Promise<CarLocation[] | null> => {
         await db.query('INSERT INTO car_locations (city) VALUES (?)', [CarLocation.city]);
-        
+
         // Run SQL query to get the updated car
-        const [ rows ] = await db.query('SELECT * FROM car_locations WHERE city = ?', [CarLocation.city]);
+        const [rows] = await db.query('SELECT * FROM car_locations WHERE city = ?', [CarLocation.city]);
 
         const locations = rows as CarLocation[];
 

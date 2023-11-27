@@ -119,8 +119,6 @@ const NewCarRepository = (host: string): CarRepository => {
         token = token.split("=")[1];
         token = token.replace(/%20/g, " ");
 
-        console.log(token);
-
         return fetch(`${host}/cars`, {
             method: "POST",
             headers: {

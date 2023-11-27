@@ -48,8 +48,8 @@ const NewReservationRepository = (app: Config): ReservationRepository => {
             {
                 user_id: user.id,
                 car_id: body.car_id,
-                start_date: body.start_date,
-                end_date: body.end_date
+                start_date: new Date(body.start_date),
+                end_date: new Date(body.end_date)
             }
         );
         if(!reservation) {
