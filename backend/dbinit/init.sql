@@ -1,5 +1,6 @@
 -- This file contains the SQL commands to initialize tables for the database.
 -- Drop all tables if they exist
+DROP TABLE IF EXISTS payments;
 DROP TABLE IF EXISTS reservations;
 DROP TABLE IF EXISTS cars;
 DROP TABLE IF EXISTS car_locations;
@@ -47,5 +48,13 @@ CREATE TABLE reservations (
     end_date DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (car_id) REFERENCES cars(id)
+);
+
+-- Create Payments table
+CREATE TABLE payments (
+    reservation_id INTEGER PRIMARY KEY NOT NULL,
+    amount INTEGER NOT NULL,
+    due_date DATE NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES reservations(id)
 );
 
