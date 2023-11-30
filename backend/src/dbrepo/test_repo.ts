@@ -65,7 +65,7 @@ const NewTestRepo = (): DatabaseRepository => {
 
     const getCarReservations = async (carID: string) => {
         const reservations: Reservation[] = [];
-        return carID ? reservations : null;
+        return reservations;
     };
 
     const deleteReservation = async (reservationID: number) => {

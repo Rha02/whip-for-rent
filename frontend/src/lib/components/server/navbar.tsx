@@ -34,7 +34,7 @@ export default async function Navbar() {
 
     return (
         // Navbar container
-        <nav className="bg-blue-400 font-medium text-center h-[10%] w-full flex flex-row justify-between box-border p-4">
+        <nav className="bg-blue-500 font-medium text-center text-white w-full flex flex-row justify-between box-border p-4">
             {/* Navbar Left Container */}
             <div className="flex my-auto">
                 <Link href="/">

@@ -68,7 +68,7 @@ interface DatabaseRepository {
      * @param carID string
      * @returns Reservation[] by car id
      */
-    getCarReservations: (carID: string) => Promise<Reservation[] | null>;
+    getCarReservations: (carID: string) => Promise<Reservation[]>;
 
     /**
      * deleteReservation() deletes a reservation from database

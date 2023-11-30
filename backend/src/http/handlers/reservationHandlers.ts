@@ -48,8 +48,8 @@ const NewReservationRepository = (app: Config): ReservationRepository => {
             {
                 user_id: user.id,
                 car_id: body.car_id,
-                start_date: body.start_date,
-                end_date: body.end_date
+                start_date: new Date(body.start_date),
+                end_date: new Date(body.end_date)
             }
         );
         if(!reservation) {
@@ -91,7 +91,14 @@ const NewReservationRepository = (app: Config): ReservationRepository => {
 
         const reservations = await app.db.getCarReservations(id);
 
-        res.status(200).json(reservations);
+        const resBody = reservations.map((reservation) => {
+            return {
+                startDate: reservation.start_date,
+                endDate: reservation.end_date
+            };
+        });
+
+        res.status(200).json(resBody);
     };
 
     return {
