@@ -55,6 +55,7 @@ CREATE TABLE payments (
     reservation_id INTEGER PRIMARY KEY NOT NULL,
     amount INTEGER NOT NULL,
     due_date DATE NOT NULL,
+    status VARCHAR(255) NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations(id)
 );
 
