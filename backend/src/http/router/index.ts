@@ -41,6 +41,9 @@ const NewRouter = (app: Config) => {
     router.route('/locations').get(repo.CarLocation.getLocations);
     router.route('/locations/:id').put(repo.CarLocation.updateLocation);
 
+    // Attach Payment routes
+    router.route('/payments').get(isAuth, repo.Payment.getPayments);
+
     return router;
 };
 
