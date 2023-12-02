@@ -1,4 +1,4 @@
-import { Car, Reservation, User, CarLocation } from '@/models';
+import { Car, Reservation, User, CarLocation, Payment } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection, ResultSetHeader } from 'mysql2/promise';
 
@@ -179,6 +179,16 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return locations || null;
     };
 
+    const createPayment = async (payment: Payment): Promise<Payment | null> => {
+        // Run SQL query to create a new payment
+        await db.query(`
+            INSERT INTO payments (reservation_id, amount, due_date, status)
+            VALUES (?, ?, ?, ?)
+        `, [payment.reservation_id, payment.amount, payment.due_date, payment.status]);
+
+        return payment;
+    };
+
     return {
         getCars,
         getCarByID,
@@ -195,7 +205,8 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         getLocationByID,
         deleteLocation,
         updateLocation,
-        createLocation
+        createLocation,
+        createPayment
     };
 };
 
