@@ -1,5 +1,5 @@
 import Config from '@/config';
-import { RequestWithUser } from '@/types';
+import { GetCarsFilter, RequestWithUser } from '@/types';
 import { Request, Response } from 'express';
 
 interface CarRepository {
@@ -38,8 +38,12 @@ const NewCarRepository = (app: Config): CarRepository => {
     }
 
     const getCars = async (req: Request, res: Response) => {
-        // Get a list of cars from the db
-        const cars = await app.db.getCars();
+        const filter: GetCarsFilter = req.query;
+        filter.start_date = filter.start_date ? new Date(filter.start_date) : undefined;
+        filter.end_date = filter.end_date ? new Date(filter.end_date) : undefined;
+        
+        // Get cars from the db
+        const cars = await app.db.getCars(filter);
 
         // Create response body 
         const resBody: Promise<ResponseCarBody>[] = cars.map((car) => {

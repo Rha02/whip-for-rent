@@ -12,4 +12,14 @@ type PaymentWithDetails = Payment & {
     car_id: string;
 };
 
-export { RequestWithUser, PaymentWithDetails };
+type GetCarsFilter = {
+    make?: string;
+    model?: string;
+    color?: string;
+    year?: number;
+    location?: number;
+    start_date?: Date;
+    end_date?: Date;
+}
+
+export { RequestWithUser, PaymentWithDetails, GetCarsFilter };

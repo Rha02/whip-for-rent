@@ -1,16 +1,51 @@
 import { Car, Reservation, User, CarLocation, Payment } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection, ResultSetHeader } from 'mysql2/promise';
-import { PaymentWithDetails } from '@/types';
+import { GetCarsFilter, PaymentWithDetails } from '@/types';
 
 // export function to create a new repository
 const NewMySQLRepo = (db: Connection): DatabaseRepository => {
     db.ping();
 
     // Car Queries
-    const getCars = async (): Promise<Car[]> => {
+    const getCars = async (filter?: GetCarsFilter): Promise<Car[]> => {
+        // Build SQL query
+        const conditions: string[] = [];
+        if (filter?.make) {
+            conditions.push(`make = '${filter.make}'`);
+        }
+        if (filter?.model) {
+            conditions.push(`model = '${filter.model}'`);
+        }
+        if (filter?.color) {
+            conditions.push(`color = '${filter.color}'`);
+        }
+        if (filter?.year) {
+            conditions.push(`year = ${filter.year}`);
+        }
+        if (filter?.location) {
+            conditions.push(`location_id = ${filter.location}`);
+        }
+        if (filter?.start_date && filter?.end_date) {
+            const startDate = new Date(filter.start_date).toISOString().substring(0, 10);
+            const endDate = new Date(filter.end_date).toISOString().substring(0, 10);
+            conditions.push(`id NOT IN (SELECT car_id FROM reservations WHERE start_date BETWEEN '${startDate}' AND '${endDate}' OR end_date BETWEEN '${startDate}' AND '${endDate}')`);
+        } else if (filter?.start_date) {
+            const startDate = new Date(filter.start_date).toISOString().substring(0, 10);
+            conditions.push(`id NOT IN (SELECT car_id FROM reservations WHERE start_date <= '${startDate}' AND end_date >= '${startDate}')`);
+        } else if (filter?.end_date) {
+            const endDate = new Date(filter.end_date).toISOString().substring(0, 10);
+            conditions.push(`id NOT IN (SELECT car_id FROM reservations WHERE start_date <= '${endDate}' AND end_date >= '${endDate}')`);
+        }
+
+        let query = 'SELECT * FROM cars';
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+        query += ' ORDER BY updated_at DESC';
+
         // Run SQL query to get all cars
-        const [rows] = await db.query('SELECT * FROM cars ORDER BY updated_at DESC');
+        const [rows] = await db.query(query);
 
         const cars = rows as Car[];
 
