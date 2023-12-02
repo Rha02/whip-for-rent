@@ -85,7 +85,7 @@ const NewCarRepository = (host: string): CarRepository => {
     };
 
     const getMakeModels = async (make: string): Promise<string[]> => {
-        const response = await fetch(`${host}/car-makes/models`);
+        const response = await fetch(`${host}/car-makes/${make}/models`);
         return response.json();
     };
 

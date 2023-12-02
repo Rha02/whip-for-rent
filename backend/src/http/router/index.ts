@@ -28,6 +28,11 @@ const NewRouter = (app: Config) => {
     router.route('/cars').post(isMod, uploadStrategy, repo.Car.postCar);
     router.route('/cars/:id').put(isMod, uploadStrategy, repo.Car.updateCar);
     router.route('/cars/:id').delete(isMod, repo.Car.deleteCar);
+    
+    // Attach Car makes, models and colors routes
+    router.route('/car-makes').get(repo.Car.getCarMakes);
+    router.route('/car-makes/:make/models').get(repo.Car.getCarMakeModels);
+    router.route('/car-colors').get(repo.Car.getCarColors);
 
     // Attach Reservation routes
     router.route('/reservations').post(isAuth, repo.Reservation.reserve);
