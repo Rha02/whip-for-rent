@@ -1,6 +1,7 @@
 import { Car, Reservation, User, CarLocation, Payment } from '@/models';
 import DatabaseRepository from './repository';
 import { Connection, ResultSetHeader } from 'mysql2/promise';
+import { PaymentWithDetails } from '@/types';
 
 // export function to create a new repository
 const NewMySQLRepo = (db: Connection): DatabaseRepository => {
@@ -189,6 +190,20 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return payment;
     };
 
+    const getUserPayments = async (userID: string): Promise<PaymentWithDetails[] | null> => {
+        // Run SQL query to get payments by user id
+        const [rows] = await db.query(
+            `SELECT r.id, p.amount, p.status, p.due_date, r.car_id, r.start_date, r.end_date FROM payments p
+            LEFT JOIN reservations r ON p.reservation_id = r.id
+            WHERE r.user_id = ?`, 
+            [userID]
+        );
+
+        const payments = rows as PaymentWithDetails[];
+
+        return payments || null;
+    };
+
     return {
         getCars,
         getCarByID,
@@ -206,7 +221,8 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         deleteLocation,
         updateLocation,
         createLocation,
-        createPayment
+        createPayment,
+        getUserPayments
     };
 };
 

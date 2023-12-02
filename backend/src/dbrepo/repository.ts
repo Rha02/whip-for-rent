@@ -1,3 +1,4 @@
+import { PaymentWithDetails } from '@/types';
 import { Car, Reservation, User, CarLocation, Payment } from 'models';
 
 interface DatabaseRepository {
@@ -116,6 +117,13 @@ interface DatabaseRepository {
      * createPayment() creates a new payment in the database
      */
     createPayment: (payment: Payment) => Promise<Payment | null>;
+
+    /**
+     * getUserPayments() gets all payments of a user
+     * @param userID string
+     * @returns Payment[] by user id
+     */
+    getUserPayments: (userID: string) => Promise<PaymentWithDetails[] | null>;
 }
 
 export default DatabaseRepository;

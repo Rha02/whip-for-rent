@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Car, CarLocation, Payment, Reservation, User} from '@/models';
 import DatabaseRepository from './repository';
+import { PaymentWithDetails } from '@/types';
 
 // export function to create a new repository
 const NewTestRepo = (): DatabaseRepository => {
@@ -103,6 +104,11 @@ const NewTestRepo = (): DatabaseRepository => {
         return payment;
     };
 
+    const getUserPayments = async (userID: string) => {
+        const payments: PaymentWithDetails[] = [];
+        return userID ? payments : null;
+    };
+
     return {
         getCars,
         getCarByID,
@@ -120,7 +126,8 @@ const NewTestRepo = (): DatabaseRepository => {
         getLocationByID,
         updateLocation,
         createLocation,
-        createPayment
+        createPayment,
+        getUserPayments
     };
 };
 
