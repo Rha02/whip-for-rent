@@ -109,6 +109,18 @@ const NewTestRepo = (): DatabaseRepository => {
         return userID ? payments : null;
     };
 
+    const getCarMakes = async (): Promise<string[]> => {
+        return [];
+    };
+
+    const getCarMakeModels = async (make: string): Promise<string[]> => {
+        return [];
+    };
+
+    const getCarColors = async (): Promise<string[]> => {
+        return [];
+    };
+
     return {
         getCars,
         getCarByID,
@@ -127,7 +139,10 @@ const NewTestRepo = (): DatabaseRepository => {
         updateLocation,
         createLocation,
         createPayment,
-        getUserPayments
+        getUserPayments,
+        getCarMakes,
+        getCarMakeModels,
+        getCarColors
     };
 };
 
