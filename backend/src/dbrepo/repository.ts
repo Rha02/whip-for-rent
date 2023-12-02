@@ -124,6 +124,25 @@ interface DatabaseRepository {
      * @returns Payment[] by user id
      */
     getUserPayments: (userID: string) => Promise<PaymentWithDetails[] | null>;
+
+    /**
+     * getCarMakes() gets all car makes
+     * @returns string[] of car makes
+     */
+    getCarMakes: () => Promise<string[]>;
+
+    /**
+     * getCarMakeModels() gets all car models by make
+     * @param make string
+     * @returns string[] of car models
+     */
+    getCarMakeModels: (make: string) => Promise<string[]>;
+
+    /**
+     * getCarColors() gets all car colors
+     * @returns string[] of car colors
+     */
+    getCarColors: () => Promise<string[]>;
 }
 
 export default DatabaseRepository;

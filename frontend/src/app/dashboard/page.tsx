@@ -19,9 +19,14 @@ export default function Dashboard() {
         CarRepo.getMakes().then((makes) => setMakes(makes));
     }, []);
 
-    const modelHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const makeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const make = e.currentTarget.value;
-        CarRepo.getMakeModels(make).then((models) => setModels(models));
+        CarRepo.getMakeModels(make).then(
+            (models) => setModels(models)
+        ).catch((err) => {
+            console.log(err);
+            setModels([]);
+        });
     };
 
     const searchHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,7 +79,7 @@ export default function Dashboard() {
                         <div className="mt-4 flex justify-center gap-4">
                             <div className="flex rounded-lg border border-gray-500 bg-gray-500 align-center">
                                 <label htmlFor="make" className="px-2 py-1 text-white">Make</label>
-                                <select name="make" className="px-1 bg-gray-50" onChange={modelHandler}>
+                                <select name="make" className="px-1 bg-gray-50" onChange={makeHandler}>
                                     <option value="">Pick a make...</option>
                                     {makes.map((make) => (
                                         <option key={make} value={make}>{make}</option>

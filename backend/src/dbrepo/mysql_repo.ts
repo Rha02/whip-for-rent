@@ -204,6 +204,45 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         return payments || null;
     };
 
+    const getCarMakes = async (): Promise<string[]> => {
+        // Run SQL query to get all car makes
+        const [rows] = await db.query('SELECT DISTINCT make FROM cars');
+
+        type Make = {
+            make: string;
+        }
+
+        const carMakes = rows as Make[];
+
+        return carMakes.map((carMake) => carMake.make);
+    };
+
+    const getCarMakeModels = async (make: string): Promise<string[]> => {
+        // Run SQL query to get all car models by make
+        const [rows] = await db.query('SELECT DISTINCT model FROM cars WHERE make = ?', [make]);
+
+        type Model = {
+            model: string;
+        }
+
+        const carModels = rows as Model[];
+
+        return carModels.map((carModel) => carModel.model);
+    };
+
+    const getCarColors = async (): Promise<string[]> => {
+        // Run SQL query to get all car colors
+        const [rows] = await db.query('SELECT DISTINCT color FROM cars');
+
+        type Color = {
+            color: string;
+        }
+
+        const carColors = rows as Color[];
+
+        return carColors.map((carColor) => carColor.color);
+    };
+
     return {
         getCars,
         getCarByID,
@@ -222,7 +261,10 @@ const NewMySQLRepo = (db: Connection): DatabaseRepository => {
         updateLocation,
         createLocation,
         createPayment,
-        getUserPayments
+        getUserPayments,
+        getCarMakes,
+        getCarMakeModels,
+        getCarColors
     };
 };
 

@@ -8,6 +8,9 @@ interface CarRepository {
     postCar: (req: RequestWithUser, res: Response) => Promise<void>;
     updateCar: (req: RequestWithUser, res: Response) => Promise<void>;
     deleteCar: (req: RequestWithUser, res: Response) => Promise<void>;
+    getCarMakes: (req: Request, res: Response) => Promise<void>;
+    getCarMakeModels: (req: Request, res: Response) => Promise<void>;
+    getCarColors: (req: Request, res: Response) => Promise<void>;
 }
 
 const NewCarRepository = (app: Config): CarRepository => {
@@ -286,12 +289,41 @@ const NewCarRepository = (app: Config): CarRepository => {
         });
     };
 
+    const getCarMakes = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
+
+        const makes = await app.db.getCarMakes();
+
+        res.status(200).json(makes);
+    };
+
+    const getCarMakeModels = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
+
+        const make = req.params.make;
+
+        const models = await app.db.getCarMakeModels(make);
+
+        res.status(200).json(models);
+    };
+
+    const getCarColors = async (req: Request, res: Response) => {
+        res.setHeader('Content-Type', 'application/json');
+
+        const colors = await app.db.getCarColors();
+
+        res.status(200).json(colors);
+    };
+
     return {
         getCars,
         getCar,
         postCar,
         updateCar,
-        deleteCar
+        deleteCar,
+        getCarMakes,
+        getCarMakeModels,
+        getCarColors
     };
 };
 
