@@ -1,4 +1,4 @@
-import { PaymentWithDetails } from '@/types';
+import { GetCarsFilter, PaymentWithDetails } from '@/types';
 import { Car, Reservation, User, CarLocation, Payment } from 'models';
 
 interface DatabaseRepository {
@@ -6,7 +6,7 @@ interface DatabaseRepository {
     * getCars() returns a list of cars from the database
     * @returns {Promise<Car[]>} A list of cars
     */
-    getCars: () => Promise<Car[]>;
+    getCars: (filter?: GetCarsFilter) => Promise<Car[]>;
 
     /**
      * getCarByID() returns a car by ID (License Plate)

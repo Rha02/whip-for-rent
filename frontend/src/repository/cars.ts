@@ -64,11 +64,10 @@ const NewCarRepository = (host: string): CarRepository => {
             if (params.model) url.searchParams.append("model", params.model);
             if (params.year) url.searchParams.append("year", params.year);
             if (params.color) url.searchParams.append("color", params.color);
-            if (params.start) url.searchParams.append("start", params.start.toString());
-            if (params.end) url.searchParams.append("end", params.end.toString());
+            if (params.start) url.searchParams.append("start_date", params.start.toString());
+            if (params.end) url.searchParams.append("end_date", params.end.toString());
             if (params.location_id) url.searchParams.append("location_id", params.location_id);
         }
-        console.log(url.href);
 
         return fetch(url.href, {
             method: "GET",
@@ -77,7 +76,6 @@ const NewCarRepository = (host: string): CarRepository => {
             }
         }).then(async (res) => {
             const data = await res.json();
-            console.log(data);
             return data;
         }).catch((err) => {
             console.log(err);
@@ -111,7 +109,6 @@ const NewCarRepository = (host: string): CarRepository => {
         formData.append("image", car.image);
 
         // get token from cookies
-        console.log(document.cookie);
         let token = document.cookie.split("; ").find(row => row.startsWith("authtoken"));
         if (!token) {
             throw new Error("No token found");
@@ -127,7 +124,6 @@ const NewCarRepository = (host: string): CarRepository => {
             body: formData
         }).then(async (res) => {
             const data = await res.json();
-            console.log(data);
             return data;
         }).catch((err) => {
             console.log(err);
