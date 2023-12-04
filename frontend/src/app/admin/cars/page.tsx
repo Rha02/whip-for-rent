@@ -227,7 +227,7 @@ export default function CarsPanel() {
                             {car.price}
                         </div>
                         <div className="border border-gray-600 px-2 py-1 overflow-hidden">
-                            1
+                            {car.location_id}
                         </div>
                         <div className="border border-gray-600 px-2 py-1 overflow-hidden">
                             {car.createdAt ? new Date(car.createdAt).toLocaleDateString() : ""}

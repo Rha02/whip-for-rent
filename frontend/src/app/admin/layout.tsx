@@ -43,7 +43,6 @@ export default function AdminLayout({
                     </div>
                 </main>
             </section>
-            <h1> THIS IS END of MY ADMIN LAYOUT</h1>
         </div>
     );
 }
