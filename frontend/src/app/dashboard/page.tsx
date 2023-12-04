@@ -48,7 +48,7 @@ export default function Dashboard() {
             color,
             start: startDate,
             end: endDate
-        });
+        }).then((res) => setCars(res)).catch((err) => console.log(err));
     };
 
     return (
