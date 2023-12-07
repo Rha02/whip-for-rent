@@ -20,5 +20,15 @@
             2,
             "always"
         ]
-    }
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/tests/**/*.ts"
+            ], // Adjust the pattern if needed
+            "rules": {
+                "@typescript-eslint/no-var-requires": "off"
+            }
+        }
+    ]
 }
