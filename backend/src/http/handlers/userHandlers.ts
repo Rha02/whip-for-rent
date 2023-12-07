@@ -122,7 +122,7 @@ const NewUserRepository = (app: Config): UserRepository => {
         // Attach token to response header
         res.header('Authorization', 'Bearer ' + token);
 
-        res.status(201).json(user);
+        res.status(200).json(user);
     };
 
     const checkAuth = async (req: RequestWithUser, res: Response) => {

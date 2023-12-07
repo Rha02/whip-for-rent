@@ -1,7 +1,7 @@
 import express from 'express';
 import { NewRepository } from '@http/handlers';
 import Config from '@/config';
-import { requiresAuth, requiresMod } from '../middleware';
+import { requiresAuth, requiresMod } from '@http/middleware';
 import multer from 'multer';
 
 const router = express.Router();

@@ -23,10 +23,7 @@
       ],
       "@http/*": [
         "src/http/*"
-      ],
-      "@dbrepo/*": [
-        "src/dbrepo/*"
-      ],
+      ]
     }
   },
   "include": [

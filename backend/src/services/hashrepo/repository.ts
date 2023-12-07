@@ -13,4 +13,4 @@ interface HashRepository {
     verifyHash(value: string, hash: string): Promise<boolean>;
 }
 
-export {HashRepository };
+export { HashRepository };

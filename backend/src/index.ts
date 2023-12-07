@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { NewRouter } from '@/http/router';
+import { NewRouter } from '@http/router';
 import { NewMySQLRepo } from '@/dbrepo';
 import cors from 'cors';
 import fs from 'fs';

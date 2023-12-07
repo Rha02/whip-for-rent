@@ -1,0 +1,11 @@
+{
+    "moduleFileExtensions": [
+        "js",
+        "json",
+        "ts"
+    ],
+    "moduleNameMapper": {
+        "^@/(.*)$": "<rootDir>/src/$1",
+        "^@http/(.*)$": "<rootDir>/src/http/$1"
+    }
+}
