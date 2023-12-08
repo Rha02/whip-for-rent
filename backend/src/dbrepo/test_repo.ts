@@ -55,6 +55,9 @@ const NewTestRepo = (): DatabaseRepository => {
 
 
     const createUser = async (user: User) => {
+        if (user.email == "dberror@wfr.loc") {
+            return null;
+        }
         return user;
     };
 
