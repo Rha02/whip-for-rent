@@ -24,4 +24,4 @@ const appConfig: Config = {
 const router = NewRouter(appConfig);
 app.use('/', router);
 
-module.exports = app;
+export default app;

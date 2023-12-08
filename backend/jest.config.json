@@ -7,5 +7,8 @@
     "moduleNameMapper": {
         "^@/(.*)$": "<rootDir>/src/$1",
         "^@http/(.*)$": "<rootDir>/src/http/$1"
+    },
+    "transform": {
+        "^.+\\.(t|j)s$": "babel-jest"
     }
 }

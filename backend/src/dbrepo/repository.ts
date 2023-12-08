@@ -1,5 +1,5 @@
 import { GetCarsFilter, PaymentWithDetails } from '@/types';
-import { Car, Reservation, User, CarLocation, Payment } from 'models';
+import { Car, Reservation, User, CarLocation, Payment } from '@/models';
 
 interface DatabaseRepository {
     /**

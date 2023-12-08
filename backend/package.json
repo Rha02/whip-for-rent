@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "test-cover": "jest --coverage --verbose"
   },
   "keywords": [],
   "author": "",
