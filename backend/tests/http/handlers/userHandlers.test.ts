@@ -122,3 +122,14 @@ describe("POST /users/register", () => {
         expect(res.status).toEqual(500);
     });
 });
+
+describe("GET /users/checkauth", () => {
+    it("should successfully return authenticated user", async () => {
+        // set auth headers
+        const res = await request(app).get("/users/checkauth").set({
+            "Authorization": "Bearer token"
+        });
+
+        expect(res.status).toEqual(200);
+    });
+});
