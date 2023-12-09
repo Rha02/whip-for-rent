@@ -38,10 +38,13 @@ const NewTestRepo = (): DatabaseRepository => {
     };
 
     const getUserByEmail= async (email: string): Promise<User | null> => {
+        if (email == 'invalidemail@wfr.loc') {
+            return null;
+        }
         return {
             id: "12345",
             email: email,
-            password: 'password',
+            password: 'testpassword',
             first_name: 'Bruce',
             last_name: 'Wayne',
             created_at: new Date(),
@@ -52,6 +55,9 @@ const NewTestRepo = (): DatabaseRepository => {
 
 
     const createUser = async (user: User) => {
+        if (user.email == "dberror@wfr.loc") {
+            return null;
+        }
         return user;
     };
 

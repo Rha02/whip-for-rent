@@ -8,7 +8,10 @@ const NewTestHashRepo = (): HashRepository => {
         },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         verifyHash(value, hash) {
-            return Promise.resolve(true);
+            if (value === hash) {
+                return Promise.resolve(true);
+            }
+            return Promise.resolve(false);
         },
     };
 };

@@ -97,15 +97,12 @@ const NewUserRepository = (app: Config): UserRepository => {
             return;
         }
 
-        // TODO: Fetch user from database by email
-        // const user = await db.getUserByEmail(email);
         const user = await app.db.getUserByEmail(body.email);
         if (!user) {
             res.status(404).json({ message: 'User not found'});
             return;
         }
 
-        // TODO: Check if user password hash matches request password hash
         const isPassword = await app.hashRepo.verifyHash(body.password, user.password);
         if(!isPassword) {
             res.status(401).json({ message: 'Invalid password'});
