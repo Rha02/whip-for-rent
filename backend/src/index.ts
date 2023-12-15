@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import { NewRouter } from '@http/router';
 import { NewMySQLRepo } from '@/dbrepo';
 import cors from 'cors';
-import fs from 'fs';
 import { connectMySQL } from '@/driver';
 import { NewJWTAuthRepo } from '@/services/authrepo';
 import { NewBCryptHashRepo } from '@/services/hashrepo';
@@ -37,10 +36,7 @@ const main = async () => {
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
-        port: parseInt(process.env.MYSQL_PORT || '3306'),
-        ssl: {
-            ca: fs.readFileSync("./mysql-ca-master.crt.pem")
-        }
+        port: parseInt(process.env.MYSQL_PORT || '3306')
     });
     
     // Set up App-wide Config
